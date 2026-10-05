@@ -1,0 +1,22 @@
+---
+title: "Migrating a 5GB MySQL database to Cloudflare D1"
+date: "2025-09-12"
+summary: "Notes on cutting storage by 99.9% while moving a production recruitment platform's database from MySQL to Cloudflare D1 (SQLite)."
+tags: ["Cloudflare", "D1", "Databases"]
+---
+
+This is a placeholder post — replace with your real write-up.
+
+## The problem
+
+We had a 5.3 GB MySQL database full of base64-encoded resumes sitting in text columns.
+
+## What changed
+
+- Moved binary resume files to Cloudflare R2
+- Normalized and cleaned up dead columns
+- Migrated the schema to SQLite-compatible types for D1
+
+## Result
+
+Database size dropped from 5.3 GB to roughly 5 MB.
