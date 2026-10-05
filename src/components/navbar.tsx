@@ -1,4 +1,9 @@
+"use client";
+
+import { Menu, X } from "lucide-react";
 import { Link } from "next-view-transitions";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const LINKS = [
   { label: "Home", href: "/" },
@@ -12,20 +17,51 @@ const LINKS = [
 ];
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
     <nav className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur-sm">
-      <ul className="flex items-center justify-center gap-6 overflow-x-auto px-6 py-4 text-sm">
-        {LINKS.map((link) => (
-          <li key={link.href} className="shrink-0">
-            <Link
-              href={link.href}
-              className="text-muted-foreground transition-all duration-300 ease-in-out hover:text-foreground hover:underline hover:decoration-2 hover:underline-offset-4"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="flex items-center justify-between px-6 py-4 sm:justify-center">
+        <ul className="hidden items-center gap-6 text-sm sm:flex">
+          {LINKS.map((link) => (
+            <li key={link.href} className="shrink-0">
+              <Link
+                href={link.href}
+                className="text-muted-foreground transition-all duration-300 ease-in-out hover:text-foreground hover:underline hover:decoration-2 hover:underline-offset-4"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <span className="text-sm font-medium sm:hidden">Menu</span>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="sm:hidden"
+        >
+          {open ? <X /> : <Menu />}
+        </Button>
+      </div>
+      {open && (
+        <ul className="flex flex-col gap-1 border-t px-6 py-3 text-sm sm:hidden">
+          {LINKS.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-2 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </nav>
   );
 }
