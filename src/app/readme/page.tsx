@@ -91,14 +91,16 @@ const PHASE_ONE = [
 ];
 
 const PHASE_TWO = [
-  "A real contact form instead of just email",
-  "A video gallery alongside the photo gallery",
+  "A real contact form with server-side validation (Zod) and email delivery via Resend, replacing the mailto popup",
+  "A video gallery alongside the photo gallery, using the same carousel component",
+  "Cal.com integration for automatic meeting and call scheduling, embedded directly in the contact flow",
+  "Umami analytics integration to track page views and surface the most-visited sections",
   "A live chat or messaging widget",
-  "Tags and search for blog posts",
-  "A way to filter projects by skill",
-  "An easier way to add content without touching code",
-  "Checks that run automatically before changes go live",
-  "A pass focused on speed and accessibility",
+  "Tag-based filtering and full-text search for blog posts",
+  "Skill-based filtering for the projects grid",
+  "An MDX or lightweight CMS driven content pipeline so content can be added without touching component code",
+  "CI checks (lint, type-check, build) that run automatically on every push before changes go live",
+  "A Lighthouse-driven performance and accessibility pass targeting Core Web Vitals",
 ];
 
 const PIPELINE = [
@@ -144,22 +146,28 @@ const DEEPER_PAGES = [
   { parent: "Blog", child: "A single blog post" },
 ];
 
+const COMPONENT_ROOT = "Layout (root)";
+
+const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section"];
+
+const CONTENT_COMPONENTS = ["Badge", "Card", "GalleryCarousel", "Hero"];
+
 const COMPONENTS = [
   {
     name: "Navbar",
-    detail: "The navigation bar at the top of the site. Used on every page.",
+    detail: "The navigation bar at the top of the site. Rendered once in the root layout, so every page gets it for free.",
   },
   {
     name: "PageHeader and Section",
-    detail: "Keep each page's title and spacing consistent. Used on every page.",
+    detail: "Keep each page's title and spacing consistent. Used on every page except Home, which uses Hero instead of PageHeader.",
   },
   {
     name: "Badge",
-    detail: "A small label, used for skills, certificates and the notes on this page.",
+    detail: "A small label, used for skills, certificates, project tags and the notes on this page.",
   },
   {
     name: "Card",
-    detail: "Used to lay out each entry on the projects page.",
+    detail: "Used to lay out each entry on the projects page and inside the gallery carousel.",
   },
 ];
 
@@ -189,10 +197,13 @@ const EVOLUTION = [
 ];
 
 const ENHANCEMENTS = [
-  "Add a small video gallery next to the photo gallery, even if it only holds a couple of clips to begin with.",
-  "Replace the email only contact popup with a small chat or messaging widget, so a visitor can reach out without leaving the site.",
+  "Replace the mailto contact popup with a real form (Zod validation, Resend for delivery) and a Cal.com embed for direct meeting/call scheduling.",
+  "Wire up profile.resumeUrl to an actual download button, or remove the field — it is currently defined in the data layer but never rendered anywhere in the UI.",
+  "Add a small video gallery alongside the photo gallery, reusing the existing GalleryCarousel component.",
+  "Integrate Umami analytics to see which pages actually get traffic instead of guessing.",
   "Make the connection between the Experience page and the professional knowledge requirement clearer, maybe with a short note at the top of the page.",
-  "Add a few automatic checks that run before changes go live, so mistakes get caught earlier instead of after the fact.",
+  "Add CI checks (lint, type-check, build) that run on every push, so regressions are caught before they reach production.",
+  "Run a Lighthouse pass targeting Core Web Vitals once the above ships, since performance work is more useful after the feature set stabilizes.",
   "Give someone who does not code a simple way to update small pieces of content without editing a file directly.",
 ];
 
@@ -349,7 +360,39 @@ export default function ReadmePage() {
           </div>
         </div>
 
-        <h3 className="mb-3 text-sm font-semibold">Shared components</h3>
+        <h3 className="mb-3 text-sm font-semibold">Component diagram</h3>
+        <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          How shared components sit under the root layout. The structural
+          layer wraps every page's content; the content layer is made up of
+          smaller pieces those pages render inside that structure.
+        </p>
+        <div className="mb-6 flex flex-col items-center gap-2">
+          <div className="skill-inner-shadow rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-foreground/10">
+            {COMPONENT_ROOT}
+          </div>
+          <ArrowDown className="text-secondary size-4" />
+          <div className="flex flex-wrap justify-center gap-2">
+            {STRUCTURAL_COMPONENTS.map((c) => (
+              <div
+                key={c}
+                className="skill-inner-shadow rounded-xl px-3 py-1.5 text-xs font-medium ring-1 ring-foreground/10"
+              >
+                {c}
+              </div>
+            ))}
+          </div>
+          <ArrowDown className="text-secondary mt-2 size-4" />
+          <div className="flex flex-wrap justify-center gap-2">
+            {CONTENT_COMPONENTS.map((c) => (
+              <div
+                key={c}
+                className="skill-inner-shadow rounded-xl px-3 py-1.5 text-xs ring-1 ring-foreground/10"
+              >
+                {c}
+              </div>
+            ))}
+          </div>
+        </div>
         <ul className="mb-8 flex flex-col gap-3 text-sm">
           {COMPONENTS.map((c) => (
             <li key={c.name}>
@@ -433,10 +476,14 @@ export default function ReadmePage() {
           About, Education and Experience section, which together act as the
           professional knowledge page, along with a projects area, a blog
           and a photo gallery. What it does not have yet is a separate video
-          gallery, and the way to get in touch is a simple email popup
-          rather than a live messaging facility. The approach of keeping
-          short information in one file and longer write ups as separate
-          text files has worked well and made every later change easier,
+          gallery, and the way to get in touch is a mailto popup rather than
+          a real contact form or a scheduling flow. There is also a smaller
+          inconsistency worth naming: profile.resumeUrl is defined in the
+          data layer but nothing in the UI renders it, so resume download is
+          a half-built feature rather than a working one. The approach of
+          keeping short information in one file and longer write ups as
+          separate text files has worked well and made every later change
+          easier,
           which suggests the early decisions were reasonable even though not
           every required feature made it in yet.
         </p>

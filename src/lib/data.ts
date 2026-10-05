@@ -6,7 +6,7 @@ export const profile = {
   email: "sanjudinesh169@gmail.com",
   phone: "+91 7989302843",
   github: "https://github.com/SanjuD1603",
-  linkedin: "https://www.linkedin.com/in/mogili-dinesh-reddy",
+  linkedin: "https://www.linkedin.com/in/mogili-dinesh-reddy-66023423a/",
   location: "Hyderabad, India",
   avatar: "/avatar.png" as string | null,
   resumeUrl: "/resume.pdf",
