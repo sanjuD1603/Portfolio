@@ -191,6 +191,10 @@ const EVOLUTION = [
     text: "After that, the focus moved from adding pages to making the existing content better. I added real links to live sites and GitHub repos, school logos on Education, and a linked certificate.",
   },
   {
+    phase: "Mobile navigation",
+    text: "The navbar originally squeezed all eight links into a single horizontally scrolling row, which was easy to miss on a phone. I rebuilt it so the full link list still shows on larger screens, but on mobile it collapses behind a hamburger button that opens a vertical menu instead.",
+  },
+  {
     phase: "Where it stands now",
     text: "The site today is simpler and more complete than when it started. There are fewer repeated sections, more working links, and this page to explain how it all came together.",
   },
@@ -198,7 +202,6 @@ const EVOLUTION = [
 
 const ENHANCEMENTS = [
   "Replace the mailto contact popup with a real form (Zod validation, Resend for delivery) and a Cal.com embed for direct meeting/call scheduling.",
-  "Wire up profile.resumeUrl to an actual download button, or remove the field — it is currently defined in the data layer but never rendered anywhere in the UI.",
   "Add a small video gallery alongside the photo gallery, reusing the existing GalleryCarousel component.",
   "Integrate Umami analytics to see which pages actually get traffic instead of guessing.",
   "Make the connection between the Experience page and the professional knowledge requirement clearer, maybe with a short note at the top of the page.",
@@ -477,10 +480,7 @@ export default function ReadmePage() {
           professional knowledge page, along with a projects area, a blog
           and a photo gallery. What it does not have yet is a separate video
           gallery, and the way to get in touch is a mailto popup rather than
-          a real contact form or a scheduling flow. There is also a smaller
-          inconsistency worth naming: profile.resumeUrl is defined in the
-          data layer but nothing in the UI renders it, so resume download is
-          a half-built feature rather than a working one. The approach of
+          a real contact form or a scheduling flow. The approach of
           keeping short information in one file and longer write ups as
           separate text files has worked well and made every later change
           easier,
