@@ -1,7 +1,8 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Download, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import { PageHeader, Section } from "@/components/section";
 import SkillsGrid from "@/components/skills-grid";
+import { Button } from "@/components/ui/button";
 import { awards, certificates, profile } from "@/lib/data";
 
 export default function AboutPage() {
@@ -29,6 +30,16 @@ export default function AboutPage() {
             </a>
           </li>
         </ul>
+        {profile.resumeUrl && (
+          <Button
+            className="btn-inner-shadow mt-6"
+            render={<a href={profile.resumeUrl} download />}
+            nativeButton={false}
+          >
+            <Download />
+            Download resume
+          </Button>
+        )}
       </Section>
       <Section title="Skills">
         <SkillsGrid />
