@@ -21,7 +21,18 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between px-6 py-4 sm:justify-center">
+      <div className="flex items-center gap-2 px-6 py-4 sm:justify-center">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="sm:hidden"
+        >
+          {open ? <X /> : <Menu />}
+        </Button>
         <ul className="hidden items-center gap-6 text-sm sm:flex">
           {LINKS.map((link) => (
             <li key={link.href} className="shrink-0">
@@ -34,18 +45,6 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <span className="text-sm font-medium sm:hidden">Menu</span>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="sm:hidden"
-        >
-          {open ? <X /> : <Menu />}
-        </Button>
       </div>
       {open && (
         <ul className="flex flex-col gap-1 border-t px-6 py-3 text-sm sm:hidden">
