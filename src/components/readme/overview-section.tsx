@@ -14,11 +14,12 @@ export default function OverviewSection() {
         should include.
       </p>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Most of the content lives in one place. My profile, education and work
-        history sit in a single file, and longer pieces, like project write ups
-        and blog posts, live as separate text files. Each page simply reads from
-        that content and lays it out, so changing something on the site usually
-        means editing a file rather than rewriting a page.
+        Content is kept apart from layout. My profile, education and work
+        history each live in their own small file, and longer pieces, like
+        project write ups and blog posts, live as separate text files. Each
+        page simply reads from that content and lays it out, so changing
+        something on the site usually means editing a file rather than
+        rewriting a page.
       </p>
       <div className="mt-4 flex flex-wrap gap-1.5">
         {STACK.map((s) => (

@@ -6,7 +6,7 @@ the Workers AI call, and the D1-backed contact/lead storage — lives here inste
 
 ## Routes (built incrementally)
 
-- `GET /mcp` — MCP server (Agents SDK) exposing portfolio data as tools: `getProjects`, `getSkills`,
+- `ALL /mcp/*` — MCP server (Agents SDK) exposing portfolio data as tools: `getProjects`, `getSkills`,
   `getExperience`, `getEducation`, `searchContent`.
 - `POST /sessions` — `{ name, email }` → starts a chat session and returns an opaque bearer
   `sessionToken` (only its SHA-256 hash is stored). Limited to 5 new sessions per IP per hour.
@@ -29,6 +29,16 @@ the Workers AI call, and the D1-backed contact/lead storage — lives here inste
   address is only used as `reply_to`.
 - Visitor-supplied text is stripped of CR/LF before it reaches an email subject.
 - Tokens are 256-bit random, expire after 24 h, and are stored hashed. IPs are stored hashed.
+- **Abuse protection**, since this API is public and `/chat` spends real Workers AI quota:
+  - `/sessions` and `/messages` both cap new rows to 5 per hashed IP per hour.
+  - A global daily circuit breaker on top of that: 100 new sessions and 50 new messages per UTC
+    day, across every IP combined, after which the route answers `429` until the next day. This
+    bounds worst-case daily AI spend even if an attacker spreads requests across many IPs.
+  - `requireOrigin` middleware (`src/index.ts`) rejects `POST /sessions`, `/chat` and `/messages`
+    unless the request's `Origin` header matches a known front-end. CORS headers alone only stop a
+    *browser* from reading the response - they don't stop a script calling the Worker directly, so
+    this is a server-side check, not just the `cors()` middleware. A spoofed header can still get
+    through, which is exactly why it's a second layer behind the rate limits above, not the only one.
 
 ## Database (Drizzle + D1)
 

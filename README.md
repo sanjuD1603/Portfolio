@@ -8,6 +8,8 @@ pages read from structured data or MDX files rather than hardcoding text in comp
 
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
 - **Tailwind CSS 4** + **Shadcn UI** for styling and interface components
+- **GSAP** (+ ScrollTrigger) for hero/scroll-triggered reveals and the chat widget's open/close and
+  message animations
 - **MDX** (`next-mdx-remote`, `gray-matter`, Shiki syntax highlighting) for long-form project and
   blog content
 - **Biome** for linting and formatting
@@ -40,9 +42,12 @@ src/
 
 `worker-api/` is a **separate, independently deployed** Cloudflare Worker (not part of the Next.js
 app above) that hosts anything needing a server — an MCP server exposing portfolio data as tools,
-a chat endpoint backed by Workers AI, and D1-backed contact/lead storage. See
-[`worker-api/README.md`](./worker-api/README.md) for details; it has its own `package.json` and
-deploys on its own CI/CD pipeline, independent of the static frontend.
+a chat endpoint backed by Workers AI, and D1-backed contact/lead storage. Because this API is
+public, it rate-limits new sessions/messages per IP, enforces a global daily cap as a circuit
+breaker on API spend, and checks the request's `Origin` header against known front-ends — see
+[`worker-api/README.md`](./worker-api/README.md)'s "Security model" section for the full picture;
+it has its own `package.json` and deploys on its own CI/CD pipeline, independent of the static
+frontend.
 
 ## Getting started
 
@@ -82,8 +87,9 @@ They cover:
   the file and field), newest-first sorting, missing files, and that the real blog posts are complete.
 - **Chat** - the state reducer, and the API round trip including failure paths.
 - **API-failure handling** - the GitHub calendar shows a message instead of disappearing.
-- **Worker API** - `/chat` (tool calls, model failure, input validation) and `/messages` (D1 write,
-  email delivery, "stored even if email fails", input validation).
+- **Worker API** - `/chat` (tool calls, model failure, input validation), `/messages` (D1 write,
+  email delivery, "stored even if email fails", input validation), the per-IP and daily rate
+  limits on `/sessions` and `/messages`, and the `Origin` check on state-changing routes.
 
 ## CI/CD
 

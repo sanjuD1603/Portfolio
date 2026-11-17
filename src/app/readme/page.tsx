@@ -3,6 +3,7 @@ import DiscoverySection from "@/components/readme/discovery-section";
 import EvaluationSection from "@/components/readme/evaluation-section";
 import EvolutionSection from "@/components/readme/evolution-section";
 import IterationOneSection from "@/components/readme/iteration-one-section";
+import IterationThreeSection from "@/components/readme/iteration-three-section";
 import IterationTwoSection from "@/components/readme/iteration-two-section";
 import OverviewSection from "@/components/readme/overview-section";
 import SummarySection from "@/components/readme/summary-section";
@@ -22,6 +23,7 @@ export default function ReadmePage() {
       <DesignSection />
       <IterationOneSection />
       <IterationTwoSection />
+      <IterationThreeSection />
       <EvolutionSection />
       <EvaluationSection />
       <SummarySection />

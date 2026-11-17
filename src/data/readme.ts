@@ -14,7 +14,10 @@ export const STACK = [
   "TypeScript",
   "Tailwind CSS 4",
   "Shadcn UI",
+  "GSAP",
   "MDX for long form content",
+  "Hono + Cloudflare Workers (API)",
+  "Cloudflare D1 + Drizzle ORM",
   "Biome",
 ];
 
@@ -28,15 +31,21 @@ export const STRUCTURE = `src/
 │  │  └─ [slug]/              One project's own page
 │  ├─ blog/                   Blog post list
 │  │  └─ [slug]/              One blog post
-│  ├─ gallery/                Photo gallery
+│  ├─ gallery/                Photo and video gallery
 │  └─ readme/                 This page
-├─ components/                Buttons, cards, the navbar and other shared pieces
+├─ components/                Buttons, cards, the navbar, chat widget and other shared pieces
 ├─ data/
+│  ├─ *.json                   My info: profile, education, experience, skills, awards
 │  ├─ projects/                A text file per project
 │  └─ blog/                    A text file per blog post
-├─ lib/                       Small scripts that read and organize the content
-│  └─ data.ts                  My info: profile, education, experience, skills, awards
-└─ app/globals.css            Colors, fonts and overall look`;
+├─ lib/                       Small scripts that read, validate and organize the content above
+└─ app/globals.css            Colors, fonts and overall look
+
+worker-api/                  A separate Cloudflare Worker (its own deploy, not part of the app above)
+├─ src/chat.ts                 The chat assistant's API route (Workers AI + rate limits)
+├─ src/messages.ts             Lead-forwarding route (D1 + Resend) - built, tested, not wired to the UI anymore
+├─ src/session.ts              Chat sign-in + per-IP and daily sending limits
+└─ src/mcp.ts                  Exposes my portfolio data as MCP tools over its own endpoint`;
 
 export const TOC: { page: string; detail: string }[] = [
   {
@@ -95,15 +104,15 @@ export const PHASE_ONE = [
 ];
 
 export const PHASE_TWO = [
-  "A real contact form with server-side validation (Zod) and email delivery via Resend, replacing the mailto popup",
-  "A video gallery alongside the photo gallery, using the same carousel component",
-  "Cal.com integration for automatic meeting and call scheduling, embedded directly in the contact flow",
-  "Umami analytics integration to track page views and surface the most-visited sections",
-  "A live chat or messaging widget",
-  "Tag-based filtering and full-text search for blog posts",
-  "Skill-based filtering for the projects grid",
-  "CI checks (lint, type-check, build) that run automatically on every push before changes go live",
-  "A Lighthouse-driven performance and accessibility pass targeting Core Web Vitals",
+  "A live AI chat widget backed by a real server, answering questions about my work and offering a call booking directly inside the panel (done - replaces the old mailto popup as the main way to get in touch)",
+  "A video gallery alongside the photo gallery, using the same carousel component (done)",
+  "Cal.com integration for automatic meeting and call scheduling, reachable from the About page and from inside the chat widget (done)",
+  "Umami analytics integration to track page views and surface the most-visited sections (done)",
+  "Tag-based filtering and full-text search for blog posts (done)",
+  "Skill-based filtering for the projects grid (done)",
+  "CI checks (lint, type-check, build, tests) that run automatically on every push before changes go live (done)",
+  "A Lighthouse-driven performance and accessibility pass targeting Core Web Vitals (done)",
+  "A standalone contact form alongside the chat widget - deliberately skipped: the chat widget already offers two live ways to reach me (ask the assistant, or book a call), and a third path to the same inbox wasn't worth building against the deadline",
 ];
 
 export const PIPELINE: { icon: LucideIcon; title: string; detail: string }[] = [
@@ -136,7 +145,7 @@ export const PIPELINE: { icon: LucideIcon; title: string; detail: string }[] = [
     icon: Server,
     title: "Worker API + D1 (beyond the browser)",
     detail:
-      "The chat widget and the lead form reach past the static site to a separate Cloudflare Worker (worker-api/), which reads and writes a D1 database - see the chatbot diagram below for the full path.",
+      "The chat widget reaches past the static site to a separate Cloudflare Worker (worker-api/), which calls an AI model and reads and writes a D1 database for sessions and transcripts.",
   },
 ];
 
@@ -174,6 +183,14 @@ export const PAGE_SET_ONE = [
   "Projects",
 ];
 
+export const ITERATION_THREE_HIGHLIGHTS = [
+  "AI chat assistant",
+  "API security",
+  "GSAP animation",
+  "CI/CD pipelines",
+  "151 + 78 automated tests",
+];
+
 export const EVOLUTION: { phase: string; text: string }[] = [
   {
     phase: "Basic stage",
@@ -196,18 +213,20 @@ export const EVOLUTION: { phase: string; text: string }[] = [
     text: "The navbar originally squeezed all eight links into a single horizontally scrolling row, which was easy to miss on a phone. I rebuilt it so the full link list still shows on larger screens, but on mobile it collapses behind a hamburger button that opens a vertical menu instead.",
   },
   {
+    phase: "Talking back",
+    text: "The biggest change since then is that the site stopped being read-only. An AI chat assistant, backed by its own small server, can answer questions about my work and bring up a booking calendar, a video gallery joined the photo one, and the site now rebuilds and redeploys itself automatically whenever I push a change, after running a full set of automated checks.",
+  },
+  {
     phase: "Where it stands now",
-    text: "The site today is simpler and more complete than when it started. There are fewer repeated sections, more working links, and this page to explain how it all came together.",
+    text: "The site today is simpler and more complete than when it started, with fewer repeated sections, more working links, an assistant that can speak for me when I am not around, and this page to explain how it all came together.",
   },
 ];
 
 export const ENHANCEMENTS = [
-  "Replace the mailto contact popup with a real form (Zod validation, Resend for delivery) and a Cal.com embed for direct meeting/call scheduling.",
-  "Add a small video gallery alongside the photo gallery, reusing the existing GalleryCarousel component.",
-  "Integrate Umami analytics to see which pages actually get traffic instead of guessing.",
-  "Make the connection between the Experience page and the professional knowledge requirement clearer, maybe with a short note at the top of the page.",
-  "Add CI checks (lint, type-check, build) that run on every push, so regressions are caught before they reach production.",
-  "Run a Lighthouse pass targeting Core Web Vitals once the above ships, since performance work is more useful after the feature set stabilizes.",
+  "Swap the projects/blog free-text filter for a fuzzy search, so a near-miss or typo still finds the right result.",
+  "Add simple view counters on projects and blog posts, backed by Cloudflare KV, so popularity is visible instead of guessed.",
+  "Generate a dynamic Open Graph image per project/post instead of one static share image for the whole site.",
+  "Add a language toggle if the site ever needs to reach a non-English-speaking audience.",
   "Give someone who does not code a simple way to update small pieces of content without editing a file directly.",
 ];
 
@@ -306,19 +325,25 @@ export const FEATURES: Feature[] = [
     name: "Automated tests and CI checks on every push",
     priority: "Should",
     personas: ["academic-reviewer"],
-    status: "In progress",
+    status: "Done",
   },
   {
     name: "Live deployment (GitHub Pages + Worker API)",
     priority: "Should",
     personas: ["recruiter", "academic-reviewer"],
-    status: "In progress",
+    status: "Done",
+  },
+  {
+    name: "API abuse protection (per-IP and daily limits, Origin check on the Worker API)",
+    priority: "Should",
+    personas: ["academic-reviewer"],
+    status: "Done",
   },
   {
     name: "Cal.com call scheduling",
     priority: "Could",
     personas: ["recruiter", "hiring-manager"],
-    status: "In progress",
+    status: "Done",
   },
   {
     name: "Command palette (Ctrl/⌘ K) across pages, projects and posts",
@@ -330,12 +355,12 @@ export const FEATURES: Feature[] = [
     name: "Umami analytics (opt-in; needs a website ID)",
     priority: "Could",
     personas: ["academic-reviewer"],
-    status: "In progress",
+    status: "Done",
   },
   {
     name: "Lighthouse CI performance and accessibility budget",
     priority: "Could",
     personas: ["academic-reviewer"],
-    status: "In progress",
+    status: "Done",
   },
 ];
