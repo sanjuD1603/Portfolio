@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "dinesh-portfolio-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  }
+  // AI binding, D1 binding and the RESEND_API_KEY secret are added when the
+  // chat/messages routes are built (see worker-api/src/chat.ts, messages.ts).
+}

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+worker-api/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +20,7 @@
 
 # production
 /build
+worker-api/dist
 
 # misc
 .DS_Store
@@ -39,3 +41,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cloudflare / wrangler
+.wrangler/
+worker-api/.wrangler/
+worker-api/worker-configuration.d.ts
