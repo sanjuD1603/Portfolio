@@ -71,3 +71,49 @@ export function filterCommands(
     )
     .map((r) => r.item);
 }
+
+/** A run of text, flagged when it is part of the match (to be rendered highlighted). */
+export type HighlightPart = { text: string; match: boolean };
+
+/**
+ * Splits `text` into plain and matched runs for `query`, mirroring how `scoreItem` matches:
+ * a substring is highlighted as one run; otherwise, with `fuzzy` on, the individual characters of
+ * an in-order subsequence ("prj" in "Projects") are. Returns a single plain run when nothing matches.
+ */
+export function highlightParts(
+  text: string,
+  query: string,
+  { fuzzy = true }: { fuzzy?: boolean } = {},
+): HighlightPart[] {
+  const q = query.trim().toLowerCase();
+  const lower = text.toLowerCase();
+  const plain = [{ text, match: false }];
+  // Some characters change length when lower-cased; indexes would no longer line up.
+  if (!q || lower.length !== text.length) return plain;
+
+  const at = lower.indexOf(q);
+  if (at !== -1) {
+    return [
+      { text: text.slice(0, at), match: false },
+      { text: text.slice(at, at + q.length), match: true },
+      { text: text.slice(at + q.length), match: false },
+    ].filter((p) => p.text);
+  }
+  if (!fuzzy || !isSubsequence(q, lower)) return plain;
+
+  const marked = new Array<boolean>(text.length).fill(false);
+  let next = 0;
+  for (let i = 0; i < lower.length && next < q.length; i++) {
+    if (lower[i] === q[next]) {
+      marked[i] = true;
+      next++;
+    }
+  }
+  const parts: HighlightPart[] = [];
+  for (let i = 0; i < text.length; i++) {
+    const last = parts[parts.length - 1];
+    if (last && last.match === marked[i]) last.text += text[i];
+    else parts.push({ text: text[i], match: marked[i] });
+  }
+  return parts;
+}

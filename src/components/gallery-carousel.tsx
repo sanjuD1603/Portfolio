@@ -37,7 +37,7 @@ export default function GalleryCarousel({
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="spotlight overflow-hidden rounded-2xl bg-card/80 transition-shadow duration-300 hover:shadow-lg hover:shadow-brand-2/10 motion-reduce:transition-none">
       <div className="relative aspect-video w-full bg-muted">
         {type === "video" ? (
           <video
@@ -98,7 +98,7 @@ export default function GalleryCarousel({
         )}
       </div>
       <CardContent>
-        <h2 className="font-heading text-lg font-medium">{title}</h2>
+        <h3 className="font-heading text-lg font-medium">{title}</h3>
         <p className="text-secondary text-sm">{description}</p>
       </CardContent>
     </Card>

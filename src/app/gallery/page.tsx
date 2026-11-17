@@ -14,10 +14,15 @@ export default function GalleryPage() {
   return (
     <main className="flex-1">
       <PageHeader
+        eyebrow="Moments"
         title="Gallery"
         subtitle="Moments from events, competitions and life."
       />
-      <Section title="Photos">
+      <Section
+        eager
+        title="Photos"
+        description="Pictures from events and competitions."
+      >
         <div className="grid gap-6 sm:grid-cols-2">
           {galleryEvents.map((event) => (
             <GalleryCarousel
@@ -29,7 +34,7 @@ export default function GalleryPage() {
           ))}
         </div>
       </Section>
-      <Section title="Videos">
+      <Section title="Videos" description="Short clips from the same events.">
         <div className="grid gap-6 sm:grid-cols-2">
           {videoGalleryEvents.map((event) => (
             <GalleryCarousel

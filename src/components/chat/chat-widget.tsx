@@ -1,8 +1,9 @@
 "use client";
 
 import { gsap } from "gsap";
-import { ArrowUp, MessageCircle, X } from "lucide-react";
+import { ArrowUp, CalendarClock, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Booker } from "@/components/cal-booking";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { Button } from "@/components/ui/button";
@@ -33,8 +34,9 @@ const SUGGESTIONS = [
  * Floating chat launcher and panel, mounted once in the root layout.
  *
  * Two modes: an AI assistant (answers grounded in portfolio data via the
- * Worker API's `/chat`) and "Message me", which POSTs name/email/message to
- * `/messages` so the owner is emailed and the lead is stored in D1.
+ * Worker API's `/chat`) and "Book a call", which swaps the transcript for the
+ * Cal.com booking calendar inline in the panel. The calendar mounts only while
+ * that mode is open, so its iframe is never fetched for visitors who don't ask.
  * GSAP animates the panel opening and each new message; failures to reach
  * the API are shown inline rather than thrown.
  */
@@ -50,10 +52,7 @@ export function ChatWidget() {
     sendMessage,
   } = useChat();
   const [input, setInput] = useState("");
-  const [leadMode, setLeadMode] = useState(false);
-  const [leadStatus, setLeadStatus] = useState<
-    "idle" | "sending" | "sent" | "failed"
-  >("idle");
+  const [bookMode, setBookMode] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const firstName = profile.name.split(" ")[0];
 
@@ -84,45 +83,11 @@ export function ChatWidget() {
     void sendMessage(value);
   }
 
-  async function handleSendToOwner(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const payload = {
-      name: form.get("name")?.toString() || undefined,
-      email: form.get("email")?.toString() || undefined,
-      message: form.get("message")?.toString() || "",
-    };
-    if (!payload.message.trim()) return;
-
-    setLeadStatus("sending");
-    const workerApiUrl = process.env.NEXT_PUBLIC_WORKER_API_URL;
-    if (!workerApiUrl) {
-      setLeadStatus("failed");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${workerApiUrl}/messages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("failed");
-      setLeadStatus("sent");
-      e.currentTarget.reset();
-    } catch {
-      setLeadStatus("failed");
-    }
-  }
-
   return (
     <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:right-6">
       {open && (
         <div
           ref={panelRef}
-          // Lenis (smooth scroll) listens for wheel/touch on the whole page and would scroll the
-          // page behind the chat; this attribute makes it leave events inside the panel alone.
-          data-lenis-prevent
           className="flex h-[min(38rem,calc(100dvh-6.5rem))] w-[min(26rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border bg-background shadow-2xl"
         >
           <div className="flex items-center gap-3 border-b px-4 py-3">
@@ -141,8 +106,8 @@ export function ChatWidget() {
                   className="size-1.5 shrink-0 rounded-full bg-emerald-500"
                 />
                 <span className="truncate">
-                  {leadMode
-                    ? "Send a message directly"
+                  {bookMode
+                    ? "Pick a time for a call"
                     : session
                       ? `Chatting as ${session.name}`
                       : "Answers about his work, instantly"}
@@ -154,9 +119,16 @@ export function ChatWidget() {
                 type="button"
                 variant="ghost"
                 size="xs"
-                onClick={() => setLeadMode((v) => !v)}
+                onClick={() => setBookMode((v) => !v)}
               >
-                {leadMode ? "Back to chat" : "Message me"}
+                {bookMode ? (
+                  "Back to chat"
+                ) : (
+                  <>
+                    <CalendarClock />
+                    Book a call
+                  </>
+                )}
               </Button>
               <Button
                 type="button"
@@ -170,42 +142,10 @@ export function ChatWidget() {
             </div>
           </div>
 
-          {leadMode ? (
-            <form
-              onSubmit={handleSendToOwner}
-              className="flex flex-1 flex-col gap-3 overflow-y-auto p-4"
-            >
-              <p className="text-muted-foreground text-xs leading-relaxed">
-                Prefer to leave a message instead of chatting? This goes
-                straight to {profile.name.split(" ")[0]}.
-              </p>
-              <Input name="name" placeholder="Your name (optional)" />
-              <Input
-                name="email"
-                type="email"
-                placeholder="Your email (optional)"
-              />
-              <Textarea
-                name="message"
-                placeholder="Your message"
-                required
-                className="flex-1"
-              />
-              <Button type="submit" disabled={leadStatus === "sending"}>
-                {leadStatus === "sending" ? "Sending…" : "Send message"}
-              </Button>
-              {leadStatus === "sent" && (
-                <p className="text-xs text-green-600 dark:text-green-500">
-                  Sent — thanks, I&apos;ll get back to you.
-                </p>
-              )}
-              {leadStatus === "failed" && (
-                <p className="text-destructive text-xs">
-                  Couldn&apos;t send that right now — try the Contact popup
-                  instead.
-                </p>
-              )}
-            </form>
+          {bookMode ? (
+            <div className="min-h-0 flex-1">
+              <Booker className="h-full" />
+            </div>
           ) : !session ? (
             <form
               onSubmit={handleStartSession}
@@ -360,11 +300,18 @@ export function ChatWidget() {
       <Button
         type="button"
         size="icon-lg"
-        className="btn-inner-shadow rounded-full shadow-lg"
+        className="chat-launcher btn-inner-shadow relative size-14 rounded-full shadow-lg transition-transform duration-200 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100 [&_svg:not([class*='size-'])]:size-6"
+        data-open={open}
         aria-label={open ? "Close chat" : "Open chat"}
         onClick={toggle}
       >
         {open ? <X /> : <MessageCircle />}
+        {!open && (
+          <span
+            aria-hidden="true"
+            className="absolute top-0 right-0 size-4 rounded-full bg-red-500 ring-2 ring-background"
+          />
+        )}
       </Button>
     </div>
   );

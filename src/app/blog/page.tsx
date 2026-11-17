@@ -8,8 +8,12 @@ export default function BlogPage() {
 
   return (
     <main className="flex-1">
-      <PageHeader title="Blog" subtitle="Notes on what I build and learn." />
-      <Section>
+      <PageHeader
+        eyebrow="Writing"
+        title="Blog"
+        subtitle="Notes on what I build and learn."
+      />
+      <Section eager>
         {posts.length === 0 ? (
           <p className="text-secondary">No posts yet. Check back soon.</p>
         ) : (

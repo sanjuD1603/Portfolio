@@ -1,8 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import { notFound } from "next/navigation";
+import TechBadge from "@/components/common/tech-badge";
 import { ContentDetail } from "@/components/content-detail";
 import { GithubIcon } from "@/components/icons/github";
-import { Badge } from "@/components/ui/badge";
 import { getAllProjects, getProject } from "@/lib/content";
 
 /** Pre-renders one page per project at build time (required for static export). */
@@ -28,46 +28,50 @@ export default async function ProjectDetailPage({
       backLabel="All projects"
       title={frontmatter.name}
       subtitle={
-        <p className="text-secondary mt-2 max-w-xl">{frontmatter.summary}</p>
+        <p className="text-secondary mt-4 max-w-2xl text-lg leading-relaxed">
+          {frontmatter.summary}
+        </p>
       }
-      headerExtra={
-        <>
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {frontmatter.stack.map((s) => (
-              <Badge
-                key={s}
-                variant="secondary"
-                className="tag-inner-shadow font-normal"
-              >
-                {s}
-              </Badge>
-            ))}
+      aside={
+        <div className="flex flex-col gap-5 rounded-2xl border bg-card/70 p-5">
+          <div>
+            <h2 className="eyebrow mb-3">Tech stack</h2>
+            <div className="flex flex-wrap gap-1.5">
+              {frontmatter.stack.map((s) => (
+                <TechBadge key={s} name={s} />
+              ))}
+            </div>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            {frontmatter.github && (
-              <a
-                href={frontmatter.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm hover:underline"
-              >
-                <GithubIcon className="size-4" />
-                View on GitHub
-              </a>
-            )}
-            {frontmatter.link && (
-              <a
-                href={frontmatter.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm hover:underline"
-              >
-                Visit live site
-                <ArrowUpRight className="size-4" />
-              </a>
-            )}
-          </div>
-        </>
+          {(frontmatter.github || frontmatter.link) && (
+            <div>
+              <h2 className="eyebrow mb-3">Links</h2>
+              <div className="flex flex-col gap-2.5">
+                {frontmatter.github && (
+                  <a
+                    href={frontmatter.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm hover:underline"
+                  >
+                    <GithubIcon className="size-4" />
+                    View on GitHub
+                  </a>
+                )}
+                {frontmatter.link && (
+                  <a
+                    href={frontmatter.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm hover:underline"
+                  >
+                    <ArrowUpRight className="size-4" />
+                    Visit live site
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       }
       content={content}
     />

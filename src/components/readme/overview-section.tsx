@@ -5,7 +5,7 @@ import { STACK } from "@/data/readme";
 /** `/readme` page section: Overview. Content is defined in `src/data/readme.ts`. */
 export default function OverviewSection() {
   return (
-    <Section title="Overview">
+    <Section eager title="Overview">
       <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
         This is my personal portfolio site, built for the CS5709 Software
         Engineering Evolution module. Before writing any code, I looked at an

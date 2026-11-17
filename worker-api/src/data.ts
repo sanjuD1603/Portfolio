@@ -14,7 +14,7 @@ export const profile = {
   email: "sanjudinesh169@gmail.com",
   github: "https://github.com/SanjuD1603",
   linkedin: "https://www.linkedin.com/in/mogili-dinesh-reddy-66023423a/",
-  location: "Hyderabad, India",
+  location: "Limerick, Ireland",
 };
 
 export const education = [

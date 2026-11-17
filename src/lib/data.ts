@@ -10,12 +10,15 @@ import certificatesData from "@/data/certificates.json";
 import educationData from "@/data/education.json";
 import experienceData from "@/data/experience.json";
 import galleryData from "@/data/gallery.json";
+import openSourceData from "@/data/open-source.json";
 import profileData from "@/data/profile.json";
 import skillsData from "@/data/skills.json";
 
 /** Owner details shown on the Home and About pages. `resumeUrl` is a path under `public/`. */
 export type Profile = {
   name: string;
+  /** Short form of `name` used for the navbar brand. */
+  shortName: string;
   role: string;
   intro: string;
   email: string;
@@ -92,3 +95,32 @@ export type Award = {
 };
 
 export const awards: Award[] = awardsData;
+
+/** One pull request or issue contributed to someone else's repository. */
+export type OpenSourceContribution = {
+  title: string;
+  summary: string;
+  url: string;
+  /** Pull request or issue number in the upstream repo. */
+  number: number;
+  kind: "pull-request" | "issue";
+  status: "merged" | "open" | "closed";
+  /** ISO date the contribution was merged (or opened, if it was not merged). */
+  date: string;
+  additions?: number;
+  deletions?: number;
+};
+
+/** An upstream project (not owned by the portfolio's author) with the contributions made to it. */
+export type OpenSourceProject = {
+  project: string;
+  /** `owner/name` on GitHub. */
+  repo: string;
+  description: string;
+  stack: string[];
+  link?: string;
+  contributions: OpenSourceContribution[];
+};
+
+export const openSource: OpenSourceProject[] =
+  openSourceData as OpenSourceProject[];

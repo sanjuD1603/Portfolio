@@ -110,28 +110,27 @@ export const PIPELINE: { icon: LucideIcon; title: string; detail: string }[] = [
   {
     icon: Database,
     title: "Content files",
-    detail:
-      "Project write ups, blog posts, and my basic info, like name and skills",
+    detail: "Projects, blog posts and profile info",
   },
   {
     icon: Code2,
     title: "Helper scripts",
-    detail: "Small scripts that read those files and organize the info",
+    detail: "Read the files and organise them",
   },
   {
     icon: LayoutGrid,
     title: "Pages",
-    detail: "About, Education, Experience, Projects, Blog, Gallery, and more",
+    detail: "About, Projects, Blog and the rest",
   },
   {
     icon: FolderTree,
     title: "Reusable pieces",
-    detail: "Buttons, cards and the navbar. Shared across every page.",
+    detail: "Navbar, cards and badges, shared by every page",
   },
   {
     icon: Globe,
     title: "What you see",
-    detail: "The finished site, in your browser",
+    detail: "The finished site in your browser",
   },
   {
     icon: Server,
@@ -161,67 +160,6 @@ export const COMPONENT_ROOT = "Layout (root)";
 export const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section", "ChatWidget"];
 
 export const CONTENT_COMPONENTS = ["Badge", "Card", "GalleryCarousel", "Hero"];
-
-export const COMPONENTS: { name: string; detail: string }[] = [
-  {
-    name: "Navbar",
-    detail:
-      "The navigation bar at the top of the site. Rendered once in the root layout, so every page gets it for free.",
-  },
-  {
-    name: "PageHeader and Section",
-    detail:
-      "Keep each page's title and spacing consistent. Used on every page except Home, which uses Hero instead of PageHeader.",
-  },
-  {
-    name: "ChatWidget",
-    detail:
-      "Mounted once in the root layout, like Navbar - but it's the only component that talks to a server. It calls the separate Worker API (worker-api/), which is backed by D1; see the chatbot diagram below for the full path.",
-  },
-  {
-    name: "Badge",
-    detail:
-      "A small label, used for skills, certificates, project tags and the notes on this page.",
-  },
-  {
-    name: "Card",
-    detail:
-      "Used to lay out each entry on the projects page and inside the gallery carousel.",
-  },
-];
-
-/** Root of the chatbot/data-path diagram: the browser-side chat widget. */
-export const CHATBOT_ROOT = "Visitor (chat widget, browser)";
-
-/** The only server the static site talks to - a separate Cloudflare Worker. */
-export const CHATBOT_GATEWAY = "Worker API — worker-api/ (Hono, CORS)";
-
-/** Services the Worker API calls out to, shown as the diagram's bottom row. */
-export const CHATBOT_SERVICES = ["MCP tools", "Workers AI", "D1 (Drizzle)", "Resend"];
-
-/** Detail copy for {@link CHATBOT_SERVICES}, listed under the diagram. */
-export const CHATBOT_SERVICE_DETAILS: { name: string; detail: string }[] = [
-  {
-    name: "MCP tools",
-    detail:
-      "getProjects, getSkills, getExperience, getEducation, searchContent — read-only portfolio data, served at /mcp. The model has no tool that touches sessions, the database or email.",
-  },
-  {
-    name: "Workers AI",
-    detail:
-      "Tool-calling model called from /chat (bearer-token session required); replies stream back to the widget token-by-token over SSE.",
-  },
-  {
-    name: "D1 (Drizzle)",
-    detail:
-      "sessions, chat_messages and messages (leads) tables. A session is always resolved server-side from a hashed bearer token, never from the request body or anything the model says.",
-  },
-  {
-    name: "Resend",
-    detail:
-      'Emails the owner a new "send to Dinesh" lead from /messages, and - via a cron that runs every 10 minutes - a transcript of any chat left idle for 30+ minutes. The same cron purges sessions older than 60 days.',
-  },
-];
 
 export const PAGE_SET_ONE = [
   "Home",

@@ -1,0 +1,86 @@
+---
+title: "Designing a database schema you won't regret"
+date: "2025-12-16"
+summary: "Practical rules for data modeling: keys, constraints, money, timestamps, and the shortcuts that tend to cost you later."
+tags: ["Databases", "Data Modeling", "SQL"]
+---
+
+Application code is easy to rewrite. Data is not. A bad function can be replaced in an afternoon, but
+a bad schema has years of real rows sitting in it, and every change becomes a migration. That makes
+schema design one of the few places where spending extra time up front reliably pays off. These are
+the rules I try to follow.
+
+## Model the real world first, tables second
+
+Before writing any `CREATE TABLE`, list the things your system is about (customers, orders, products)
+and how they relate: one-to-many, many-to-many. A sentence like "a customer has many orders, and an
+order has many line items for products" already contains most of your schema. Many-to-many
+relationships need a join table of their own:
+
+```sql
+CREATE TABLE order_items (
+  order_id   INTEGER NOT NULL REFERENCES orders (id),
+  product_id INTEGER NOT NULL REFERENCES products (id),
+  quantity   INTEGER NOT NULL CHECK (quantity > 0),
+  PRIMARY KEY (order_id, product_id)
+);
+```
+
+## Normalise until it hurts, then stop
+
+Normalisation means storing each fact in exactly one place. If a customer's email lives in both the
+`customers` table and every row of `orders`, then changing it means updating many rows and hoping you
+didn't miss one. Put it in one table and reference it by id.
+
+Denormalisation, copying data on purpose, is a legitimate optimisation, but treat it as a deliberate
+exception that you can justify with a measured problem, not as the starting point.
+
+## Let the database enforce the rules
+
+Constraints are free, tireless code reviewers:
+
+- `NOT NULL` on every column that must have a value.
+- `UNIQUE` where duplicates would be a bug (emails, slugs).
+- `FOREIGN KEY` so you cannot have an order pointing at a customer that does not exist.
+- `CHECK` for simple invariants such as `quantity > 0` or `price_cents >= 0`.
+
+Application-level validation is still necessary for friendly error messages, but it is not a
+substitute. Bugs, scripts and manual fixes all bypass the app; they cannot bypass the database.
+
+## Choose types carefully
+
+**Money is never a float.** `0.1 + 0.2` is not `0.3` in floating point. Store amounts as integers in the
+smallest unit (cents) alongside a currency code, or use a fixed-precision decimal type.
+
+**Timestamps are UTC.** Store moments in time in UTC and convert to a local time zone only when
+displaying them. (There is more on this in a separate post on dates and time zones.)
+
+**Identifiers need a plan.** Auto-incrementing integers are compact and fast, but they leak how many
+rows you have and are awkward to generate in several places at once. Random UUIDs avoid both problems
+at the cost of size and index locality. Neither is wrong; pick one on purpose.
+
+**Be sparing with JSON columns.** They are handy for genuinely free-form data, but anything you filter,
+join or sort on regularly belongs in real columns that can be indexed and constrained.
+
+## Plan for change
+
+You will get the schema wrong somewhere, so make changes cheap:
+
+- Keep every schema change in a **versioned migration file**, committed with the code that needs it.
+- Make additive changes first (add a nullable column, backfill, then tighten it) rather than
+  destructive ones, so old and new code can both run during a rollout.
+- Think about deletion early. "Soft delete" with a `deleted_at` column preserves history, but it
+  means every query must remember to filter, and unique constraints get awkward. Decide whether you
+  need it rather than adding it by reflex.
+
+## Name things consistently
+
+A boring, uniform convention beats a clever one: plural table names or singular, but not both;
+`snake_case` throughout; foreign keys named `<table>_id`; booleans that read like questions
+(`is_active`). It costs nothing and removes a whole class of small mistakes.
+
+## The test I use
+
+For every table, I ask three questions: *What does one row represent? What makes it unique? What can
+never be true about it?* If I can answer all three, the primary key, unique constraints and checks
+more or less write themselves, and the table is probably in good shape.

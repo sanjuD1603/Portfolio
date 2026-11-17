@@ -1,0 +1,93 @@
+---
+title: "SQL indexes: how to tell when you actually need one"
+date: "2025-11-04"
+summary: "A practical guide to what an index really is, how to read a query plan, and the handful of mistakes that make indexes useless."
+tags: ["Databases", "SQL", "Performance"]
+---
+
+"Add an index" is the first piece of advice anyone gives for a slow query, and it is often right.
+It is also advice that gets applied blindly: indexes get added to every column, never checked, and
+then wonder why writes got slower and the original query is still crawling. This post is the mental
+model I use to decide whether an index will help, and how to confirm it did.
+
+## What an index actually is
+
+A table is, roughly, a pile of rows. To find the rows where `email = 'a@b.com'`, the database has
+no choice but to read the whole pile — a **full table scan**. An index is a second, sorted
+structure (usually a B-tree) that maps column values to row locations. Because it is sorted, the
+database can binary-search it: finding one value in a million rows takes around twenty comparisons
+instead of a million.
+
+The trade-off is in that second structure. Every `INSERT`, `UPDATE` and `DELETE` has to keep the
+index in sync, and the index takes disk space. An index is a deal: faster reads in exchange for
+slower writes and more storage. Whether it is a good deal depends on how the table is used.
+
+## Don't guess, read the plan
+
+Every mainstream database can tell you how it intends to run a query. In SQLite and PostgreSQL:
+
+```sql
+-- SQLite
+EXPLAIN QUERY PLAN
+SELECT * FROM orders WHERE customer_id = 42;
+
+-- PostgreSQL (ANALYZE actually runs the query and reports real timings)
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE customer_id = 42;
+```
+
+What you are looking for is the difference between a scan (`SCAN orders`, `Seq Scan`) and a search
+(`SEARCH orders USING INDEX`, `Index Scan`). Create the index, run the plan again, and confirm the
+scan became a search:
+
+```sql
+CREATE INDEX idx_orders_customer_id ON orders (customer_id);
+```
+
+If the plan did not change, the index is not helping, no matter how sensible it looked.
+
+## Composite indexes and column order
+
+An index on `(customer_id, created_at)` is one sorted structure ordered by customer first, then by
+date within each customer. That makes it excellent for this query:
+
+```sql
+SELECT * FROM orders
+WHERE customer_id = 42
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+But it cannot help a query that filters only on `created_at`, for the same reason a phone book
+sorted by surname is no use for finding everyone with a particular first name. The rule of thumb is
+the **leftmost prefix**: the index is usable for queries that constrain its first column, then its
+first two, and so on. Put equality-filtered columns first and range or sort columns after them.
+
+## Things that quietly defeat an index
+
+- **Wrapping the column in a function.** `WHERE lower(email) = 'a@b.com'` cannot use a plain index
+  on `email`, because the stored values are not lower-cased. Either store normalised data or create
+  an index on the expression itself.
+- **Leading wildcards.** `LIKE '%smith'` has to look at everything; `LIKE 'smith%'` can use the
+  index because the prefix is known.
+- **Type mismatches.** Comparing a text column to a number can force the database to convert every
+  row first.
+- **Low-selectivity columns.** An index on a boolean `is_active` column where 95% of rows are `true`
+  helps almost nothing: the database would still read most of the table.
+
+## When not to add one
+
+Skip the index on small tables (a scan of a few hundred rows is already instant), on tables that are
+written far more than they are read, and on columns you never filter, join or sort by. Add indexes in
+response to a slow query you have measured, not in anticipation of one.
+
+## A short checklist
+
+1. Find the slow query, ideally from real timings rather than a hunch.
+2. Read its plan and spot the scan.
+3. Add the narrowest index that turns it into a search, thinking about column order.
+4. Re-read the plan and re-time the query.
+5. Periodically drop indexes nothing uses; they cost you on every write.
+
+Indexes are not magic, just a sorted copy of some of your data. Once you see them that way, it gets
+much easier to predict when they will help.

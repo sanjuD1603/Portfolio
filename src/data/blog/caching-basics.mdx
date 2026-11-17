@@ -1,0 +1,88 @@
+---
+title: "Caching basics: what to cache, where, and when to let go"
+date: "2026-04-21"
+summary: "A tour of the layers where caching happens, the HTTP headers that control it, and a few simple strategies for invalidation."
+tags: ["Performance", "HTTP", "Web"]
+---
+
+There is an old joke that the two hard problems in computer science are naming things, cache
+invalidation, and off-by-one errors. Caching is easy to add and hard to get right, so it helps to have
+a clear picture of where it happens and what each layer is good for.
+
+## The idea in one sentence
+
+A cache keeps a copy of something expensive to produce, so the next request can be answered from the
+copy. The price is that the copy may be out of date, and the whole craft is deciding how stale is
+acceptable.
+
+## The layers
+
+Between a user and your data there are usually several caches, each closer to the user than the last:
+
+1. **The browser.** The fastest cache there is: no network at all. Controlled by response headers.
+2. **A CDN or edge cache.** Shared copies served from a location near the user, which spares your
+   origin server from most traffic for public content.
+3. **The application.** In-memory or a store such as Redis, holding computed results, rendered fragments
+   or session data.
+4. **The database.** Query and page caches, which you mostly get without asking.
+
+The closer to the user a cache sits, the bigger the win and the harder invalidation becomes, because
+you have less control over copies that live on someone else's device.
+
+## HTTP caching in practice
+
+For web content, the `Cache-Control` response header does most of the work:
+
+```http
+Cache-Control: public, max-age=31536000, immutable
+```
+
+That says: anyone may cache this, for a year, and it will never change. It is ideal for files whose names
+contain a content hash (`app.3f9c1b.js`), because a new version gets a new name, so the old copy never
+needs invalidating.
+
+For content that changes, a shorter lifetime combined with revalidation works well:
+
+```http
+Cache-Control: public, max-age=60, stale-while-revalidate=300
+```
+
+Here the cached copy is fresh for a minute; for the next five minutes it can still be served instantly
+while a fresh copy is fetched in the background. Users get speed, and the content is never very old.
+
+Two other tools are worth knowing. An `ETag` lets the browser ask "has this changed?" and receive a tiny
+`304 Not Modified` instead of the full body. And `Cache-Control: no-store` marks responses that must
+never be cached, such as pages showing personal data.
+
+## Invalidation strategies
+
+When data changes, you have a few honest options:
+
+- **Wait it out (TTL).** Give entries a time to live and accept that they may be briefly stale. It is
+  the simplest approach and is right more often than people expect.
+- **Version the key or URL.** Include a version or content hash so changed data is simply a different
+  key. Nothing ever has to be purged.
+- **Purge on write.** When you update a record, delete or refresh the cached entries derived from it.
+  Precise, but you have to remember every place the data was cached. Tag-based purging, where related
+  entries share a tag, makes this much more manageable.
+
+## Pitfalls
+
+**Cache stampede.** When a popular entry expires, many requests may all miss at once and hit the
+database together. Mitigate it by letting one request refresh while the rest serve the slightly stale
+copy, or by adding a little random jitter to expiry times.
+
+**Caching personalised responses.** If a response varies by user, a shared cache must not store it, or
+one person's data can be served to another. Mark it `private` or `no-store`.
+
+**Caching errors.** A transient failure cached for an hour becomes a long outage. Be careful about what
+status codes you allow into a cache.
+
+**Caching before measuring.** A cache adds a moving part and a new class of bugs. Add one in response to
+a real bottleneck, and be able to say what its hit rate is.
+
+## Where I start
+
+Cache static assets aggressively with hashed filenames, give public pages a short lifetime with
+`stale-while-revalidate`, and only reach for application-level caches when profiling shows a specific
+expensive computation. That order captures most of the benefit for the least risk.

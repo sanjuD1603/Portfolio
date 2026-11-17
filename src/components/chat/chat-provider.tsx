@@ -343,7 +343,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         dispatch({
           type: "error",
           error:
-            'This chat has reached its message limit. Use "Message me" to reach out directly.',
+            'This chat has reached its message limit. Use "Book a call" to talk with me directly.',
         });
         return;
       }

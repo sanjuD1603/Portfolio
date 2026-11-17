@@ -18,7 +18,7 @@
     {
       "binding": "DB",
       "database_name": "dinesh-portfolio-leads",
-      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID",
+      "database_id": "59efb5e4-f548-401a-b37f-8e84075b0ad5",
       "migrations_dir": "migrations"
     }
   ],

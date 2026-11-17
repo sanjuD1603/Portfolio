@@ -1,0 +1,87 @@
+---
+title: "Handling dates and time zones without losing your mind"
+date: "2026-07-08"
+summary: "A short set of rules for storing, transporting and displaying time so your data stays correct across time zones and daylight saving."
+tags: ["Data", "JavaScript", "Best Practices"]
+---
+
+Dates are one of those topics that look trivial until the first bug report from a user in a different
+country. The good news is that a few consistent rules prevent almost all of the pain.
+
+## Two different things called "a date"
+
+The root of most confusion is that there are two separate concepts:
+
+- **An instant**: a single moment in time, the same for everyone on Earth. "The order was placed at
+  12:00 UTC on 3 March."
+- **A calendar date or wall-clock time**: something people read off a calendar or clock, meaningful
+  only in a place. "My birthday is 3 March." "The shop opens at 09:00."
+
+Instants should be stored as instants. A birthday is not an instant at all: it has no time zone, and
+storing it as midnight in some zone is how people end up with birthdays one day off.
+
+## Rule 1: store and transmit in UTC
+
+Keep instants in UTC in your database and APIs, and use the unambiguous ISO 8601 format with an explicit
+offset:
+
+```text
+2026-03-03T12:00:00Z
+```
+
+The trailing `Z` means UTC. Strings like `03/04/2026` are ambiguous (is that March or April?) and
+strings without an offset leave the reader guessing which zone you meant. A Unix timestamp is fine too,
+as long as everyone agrees whether it is in seconds or milliseconds.
+
+## Rule 2: convert only at the edges
+
+Do arithmetic and comparisons on UTC values, and convert to a person's local zone as the very last step
+before showing it. In JavaScript, `Intl.DateTimeFormat` does this properly:
+
+```ts
+const instant = new Date("2026-03-03T12:00:00Z");
+
+new Intl.DateTimeFormat("en-GB", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Asia/Kolkata",
+}).format(instant);
+// "3 Mar 2026, 17:30"
+```
+
+Always use named zones from the IANA database (`Europe/Dublin`, `America/New_York`), never a fixed
+offset such as `+01:00`. A named zone knows when daylight saving starts and ends; a fixed offset does
+not, and will be an hour wrong for half the year.
+
+## Rule 3: be careful with "days"
+
+Not every day has 24 hours. On the days clocks change, a local day is 23 or 25 hours long, so "add 24
+hours" and "add one day" are different operations. Likewise, "start of today" depends entirely on whose
+today you mean.
+
+When you need "all events on 3 March", decide whose 3 March it is, compute the start and end of that day
+in that zone, convert both to UTC, and query the range between them.
+
+## JavaScript's own traps
+
+- `new Date("2026-03-03")` is parsed as UTC midnight, while `new Date("2026-03-03T00:00:00")` is parsed
+  as *local* midnight. The same-looking inputs give different instants.
+- `getMonth()` is zero-based (January is `0`) and `getDate()` is one-based, which catches everyone at
+  least once.
+- A `Date` object is always an instant; it does not carry a time zone. The zone only appears when you
+  format it.
+- For anything beyond simple formatting, consider a dedicated library or the newer `Temporal` API, which
+  separates instants, calendar dates and zoned times into distinct types, exactly the distinction above.
+
+## Testing the awkward cases
+
+If your software deals with time in a way that matters, test it against the situations that break naive
+code: a user in a zone far from yours, the day clocks go forward and the day they go back, the end of a
+month, a leap year, and midnight. Most date bugs live in those corners, and a handful of fixed-date unit
+tests will find them cheaply.
+
+## The short version
+
+Store instants in UTC, label them with an explicit offset, use named IANA zones, convert at the edges,
+and treat calendar dates as a separate concept from moments in time. Follow those and your data stays
+correct no matter where your users are.

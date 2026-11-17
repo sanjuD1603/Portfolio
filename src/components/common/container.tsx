@@ -1,6 +1,7 @@
+import { Reveal } from "@/components/common/reveal";
 import { cn } from "@/lib/utils";
 
-/** Horizontal-padding wrapper with the shared fade-in entrance animation. */
+/** Page-width wrapper (max 80rem, centred, side padding) that slides up and fades in as it scrolls into view. */
 export default function Container({
   className,
   children,
@@ -9,6 +10,8 @@ export default function Container({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("animate-fade-in-blur px-6", className)}>{children}</div>
+    <Reveal className={cn("mx-auto w-full max-w-7xl px-6", className)}>
+      {children}
+    </Reveal>
   );
 }
