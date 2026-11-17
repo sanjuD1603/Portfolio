@@ -9,6 +9,7 @@ const GalleryCarousel = dynamic(() => import("@/components/gallery-carousel"), {
   ),
 });
 
+/** Gallery: photo carousels per event plus a videos section. */
 export default function GalleryPage() {
   return (
     <main className="flex-1">

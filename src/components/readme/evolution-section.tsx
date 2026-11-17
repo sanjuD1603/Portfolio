@@ -1,6 +1,7 @@
 import { Section } from "@/components/section";
 import { EVOLUTION } from "@/data/readme";
 
+/** `/readme` page section: Evolution (Phase 2). Content is defined in `src/data/readme.ts`. */
 export default function EvolutionSection() {
   return (
     <Section title="Evolution">

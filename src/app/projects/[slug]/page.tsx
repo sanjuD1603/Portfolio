@@ -5,10 +5,12 @@ import { GithubIcon } from "@/components/icons/github";
 import { Badge } from "@/components/ui/badge";
 import { getAllProjects, getProject } from "@/lib/content";
 
+/** Pre-renders one page per project at build time (required for static export). */
 export function generateStaticParams() {
   return getAllProjects().map((p) => ({ slug: p.slug }));
 }
 
+/** Project page; 404s if the slug does not exist. */
 export default async function ProjectDetailPage({
   params,
 }: {

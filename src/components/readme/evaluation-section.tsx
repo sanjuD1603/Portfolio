@@ -1,6 +1,7 @@
 import { Section } from "@/components/section";
 import { ENHANCEMENTS } from "@/data/readme";
 
+/** `/readme` page section: Evaluation. Content is defined in `src/data/readme.ts`. */
 export default function EvaluationSection() {
   return (
     <Section title="Evaluation">

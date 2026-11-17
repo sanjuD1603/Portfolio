@@ -16,6 +16,11 @@ import { profile } from "@/lib/data";
 
 const EMAIL = profile.email;
 
+/**
+ * "Contact me" dialog: copy the email address or open the mail app.
+ * If the Clipboard API is unavailable or denied, a message tells the visitor
+ * to copy manually - the mailto link remains as a fallback.
+ */
 export default function ContactPopup() {
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);

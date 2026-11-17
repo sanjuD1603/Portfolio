@@ -11,6 +11,7 @@ const GithubCalendar = dynamic(
   },
 );
 
+/** Home: hero, recent experience, featured projects and the GitHub activity calendar. */
 export default function Home() {
   return (
     <main className="flex-1">

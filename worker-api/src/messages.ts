@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
-import { profile } from "./data";
+import { getDb, schema } from "./db";
+import { sendOwnerEmail } from "./email";
 import type { Env } from "./env";
 
 const MESSAGE_REQUEST_SCHEMA = z.object({
@@ -10,9 +11,9 @@ const MESSAGE_REQUEST_SCHEMA = z.object({
 });
 
 /**
- * "Send this to Dinesh" action from the chat widget — the real fix for the
- * Phase 1 instant-messaging gap. Always stores the lead in D1 first; email
- * delivery via Resend is best-effort and must not lose the lead if it fails.
+ * "Send this to Dinesh" action from the chat widget. Always stores the lead
+ * in D1 first; email delivery via Resend is best-effort and must not lose
+ * the lead if it fails.
  */
 export async function handleMessage(c: Context<{ Bindings: Env }>) {
   const body = await c.req.json().catch(() => null);
@@ -26,14 +27,15 @@ export async function handleMessage(c: Context<{ Bindings: Env }>) {
 
   const { name, email, message } = parsed.data;
 
-  let stored = false;
   try {
-    await c.env.DB.prepare(
-      "INSERT INTO messages (name, email, message, created_at) VALUES (?, ?, ?, ?)",
-    )
-      .bind(name ?? null, email ?? null, message, new Date().toISOString())
-      .run();
-    stored = true;
+    await getDb(c.env.DB)
+      .insert(schema.messages)
+      .values({
+        name: name ?? null,
+        email: email ?? null,
+        message,
+        createdAt: new Date().toISOString(),
+      });
   } catch (err) {
     console.error("failed to store message in D1", err);
     return c.json(
@@ -42,28 +44,11 @@ export async function handleMessage(c: Context<{ Bindings: Env }>) {
     );
   }
 
-  let emailed = false;
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${c.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Portfolio chat <onboarding@resend.dev>",
-        to: c.env.OWNER_EMAIL || profile.email,
-        reply_to: email,
-        subject: `New portfolio message${name ? ` from ${name}` : ""}`,
-        text: message,
-      }),
-    });
-    emailed = res.ok;
-    if (!res.ok)
-      console.error("resend delivery failed", res.status, await res.text());
-  } catch (err) {
-    console.error("resend request failed", err);
-  }
+  const emailed = await sendOwnerEmail(c.env, {
+    subject: `New portfolio message${name ? ` from ${name}` : ""}`,
+    text: message,
+    replyTo: email,
+  });
 
-  return c.json({ stored, emailed });
+  return c.json({ stored: true, emailed });
 }

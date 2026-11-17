@@ -2,6 +2,7 @@ import { Section } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { PAGE_SET_ONE } from "@/data/readme";
 
+/** `/readme` page section: Iteration 1. Content is defined in `src/data/readme.ts`. */
 export default function IterationOneSection() {
   return (
     <Section title="Development (Iteration 1)">

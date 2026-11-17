@@ -18,9 +18,14 @@
     {
       "binding": "DB",
       "database_name": "dinesh-portfolio-leads",
-      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID"
+      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
     }
   ],
+  "triggers": {
+    // Every 10 minutes: email transcripts of abandoned chats, purge expired sessions.
+    "crons": ["*/10 * * * *"]
+  },
   "vars": {
     "OWNER_EMAIL": "sanjudinesh169@gmail.com"
   }

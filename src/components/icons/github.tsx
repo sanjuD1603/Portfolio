@@ -1,3 +1,4 @@
+/** GitHub mark as an inline SVG (lucide-react no longer ships brand icons). */
 export function GithubIcon({ className }: { className?: string }) {
   return (
     <svg

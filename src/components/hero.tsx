@@ -1,18 +1,15 @@
 import { ArrowRight, Mail } from "lucide-react";
-import { Link } from "next-view-transitions";
 import Image from "next/image";
+import { Link } from "next-view-transitions";
 import Container from "@/components/common/container";
 import { GithubIcon } from "@/components/icons/github";
 import { Button } from "@/components/ui/button";
+import { assetPath } from "@/lib/assets";
 import { profile, socialLinks } from "@/lib/data";
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 72 72"
-      className={className}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 72 72" className={className} aria-hidden="true">
       <g fill="none" fillRule="evenodd">
         <path
           d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z"
@@ -36,12 +33,13 @@ const SOCIAL_ICONS: Record<
   Email: Mail,
 };
 
+/** Home-page intro: avatar, name, role, short bio and social links from `profile`. */
 export default function Hero() {
   return (
     <Container className="flex flex-col items-center gap-6 border-b py-24 text-center sm:py-32">
       {profile.avatar ? (
         <Image
-          src={profile.avatar}
+          src={assetPath(profile.avatar)}
           alt={profile.name}
           width={160}
           height={160}

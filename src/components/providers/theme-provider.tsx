@@ -3,6 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type * as React from "react";
 
+/** Thin wrapper over `next-themes`' provider so the root layout stays server-side. */
 export function ThemeProvider({
   children,
   ...props

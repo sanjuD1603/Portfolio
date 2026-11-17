@@ -7,6 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import type { BlogPost } from "@/lib/content";
 
+/**
+ * Blog index with free-text search (title + summary) and a tag filter.
+ * Both filters combine with AND and run client-side on the posts passed in.
+ */
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);

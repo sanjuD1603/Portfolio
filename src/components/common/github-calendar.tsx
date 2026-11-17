@@ -4,6 +4,16 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
 
+/**
+ * GitHub contribution heatmap for the last year.
+ *
+ * Data comes from a public contributions API (browser-side fetch). States:
+ * skeleton while loading, the calendar on success, and a visible message on
+ * failure so the section never silently disappears. The `cancelled` flag stops
+ * a late response from updating state after unmount or a username change.
+ *
+ * @param username - GitHub username to display.
+ */
 export default function GithubCalendar({ username }: { username: string }) {
   const { resolvedTheme } = useTheme();
   const [data, setData] = useState<Activity[] | null>(null);

@@ -133,15 +133,32 @@ export const skills = [
   },
 ];
 
+/**
+ * Routes of the portfolio site itself. The chat links visitors to these (relative paths, so they
+ * resolve against whichever origin / base path the site is served from). Keep in sync with
+ * src/app and the `page` fields on `projects` below (= src/data/projects/<slug>.mdx).
+ */
+export const sitePages = [
+  { path: "/about", title: "About" },
+  { path: "/projects", title: "Projects" },
+  { path: "/experience", title: "Experience" },
+  { path: "/education", title: "Education" },
+  { path: "/blog", title: "Blog" },
+  { path: "/gallery", title: "Gallery" },
+  { path: "/readme", title: "Case study / README" },
+];
+
 export const projects = [
   {
     name: "Ayoka — Skincare Assessment App",
+    page: "/projects/ayoka-skincare",
     summary:
       "Cross-platform skincare analysis app with a 13-step multilingual questionnaire, animated onboarding and real-time AI analysis.",
     stack: ["React Native (Expo)", "NestJS", "PostgreSQL", "TypeScript"],
   },
   {
     name: "BetterBeBaked — E-Commerce",
+    page: "/projects/betterbebaked",
     summary:
       "Full-stack bakery e-commerce platform with product variants, cart, wishlist, pre-orders and bulk orders.",
     stack: [
@@ -156,6 +173,7 @@ export const projects = [
   },
   {
     name: "ChitOps — Chit Fund Management",
+    page: "/projects/chitops",
     summary:
       "Scalable chit fund backend supporting multiple chit types, slots, member participation and month-wise lifecycle tracking.",
     stack: [
@@ -170,6 +188,7 @@ export const projects = [
   },
   {
     name: "MovieMagic",
+    page: "/projects/moviemagic",
     summary:
       "Movie ticket booking system on an optimized MySQL database with ER and relational schema design.",
     stack: ["HTML", "CSS", "JavaScript", "SQL", "Node.js", "Express.js"],

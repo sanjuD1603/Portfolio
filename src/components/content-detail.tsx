@@ -5,6 +5,13 @@ import type { ReactNode } from "react";
 import Container from "@/components/common/container";
 import { mdxOptions } from "@/lib/mdx";
 
+/**
+ * Shared detail-page layout for MDX content (projects and blog posts):
+ * back link, title, optional subtitle/extra header, then the rendered MDX body.
+ * Both `[slug]` routes are thin wrappers around this component.
+ *
+ * @param content - Raw MDX body (frontmatter already stripped).
+ */
 export function ContentDetail({
   backHref,
   backLabel,

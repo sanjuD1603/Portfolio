@@ -4,10 +4,16 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
+/** `Document` with the (not yet universally typed) View Transitions API. */
 type ViewTransitionDocument = Document & {
   startViewTransition?: (callback: () => void) => { ready: Promise<void> };
 };
 
+/**
+ * Light/dark toggle. Where the View Transitions API is available (and the
+ * visitor has not requested reduced motion) the new theme is revealed as a
+ * circle expanding from the click point; otherwise it switches instantly.
+ */
 export default function ThemeToggleCircle({
   className = "",
 }: {
@@ -67,11 +73,11 @@ export default function ThemeToggleCircle({
         className,
       )}
     >
-      {resolvedTheme === "dark" ? (
-        <Sun className="h-5 w-5" />
-      ) : (
-        <Moon className="h-5 w-5" />
-      )}
+      {/* Both icons are rendered and CSS picks one via the `dark` class on <html>.
+          Choosing in JS from `resolvedTheme` would differ between the server (unknown
+          theme) and the client (dark), causing a hydration mismatch. */}
+      <Sun className="hidden h-5 w-5 dark:block" />
+      <Moon className="h-5 w-5 dark:hidden" />
     </button>
   );
 }

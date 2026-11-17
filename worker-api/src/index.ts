@@ -1,9 +1,11 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { handleChat } from "./chat";
+import { handleChat, handleHistory } from "./chat";
 import type { Env } from "./env";
+import { runScheduled } from "./followup";
 import { PortfolioMCP } from "./mcp";
 import { handleMessage } from "./messages";
+import { handleCreateSession } from "./session";
 
 // Wrangler's durable_objects binding (class_name: "PortfolioMCP") requires
 // the class to be exported from this entry module.
@@ -17,15 +19,18 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://dineshreddy016.com",
-      // Add the GitHub Pages origin (https://<username>.github.io) once the
-      // repo name/basePath for the static site deployment is finalised.
+      // GitHub Pages serves every project of this account from one origin;
+      // the /Portfolio sub-path is not part of an Origin header.
+      "https://sanjud1603.github.io",
     ],
   }),
 );
 
 app.get("/", (c) => c.json({ status: "ok", service: "dinesh-portfolio-api" }));
 
+app.post("/sessions", handleCreateSession);
 app.post("/chat", handleChat);
+app.get("/chat/history", handleHistory);
 app.post("/messages", handleMessage);
 
 app.all("/mcp/*", (c) =>
@@ -39,4 +44,10 @@ app.all("/mcp/*", (c) =>
   ),
 );
 
-export default app;
+export default {
+  fetch: app.fetch,
+  // Cron Trigger: emails transcripts of chats the visitor walked away from, and purges old ones.
+  scheduled(_controller, env, ctx) {
+    ctx.waitUntil(runScheduled(env));
+  },
+} satisfies ExportedHandler<Env>;

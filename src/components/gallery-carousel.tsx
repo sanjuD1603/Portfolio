@@ -5,7 +5,16 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { assetPath } from "@/lib/assets";
 
+/**
+ * Prev/next carousel that wraps around at both ends.
+ *
+ * @param title - Used for the heading and image alt text.
+ * @param description - Caption under the heading.
+ * @param images - Image or video URLs (paths under `public/`).
+ * @param type - `"image"` (default, `next/image`) or `"video"` (native `<video controls>`).
+ */
 export default function GalleryCarousel({
   title,
   description,
@@ -33,7 +42,7 @@ export default function GalleryCarousel({
         {type === "video" ? (
           <video
             key={images[index]}
-            src={images[index]}
+            src={assetPath(images[index])}
             controls
             className="size-full object-cover"
           >
@@ -41,7 +50,7 @@ export default function GalleryCarousel({
           </video>
         ) : (
           <Image
-            src={images[index]}
+            src={assetPath(images[index])}
             alt={`${title} photo ${index + 1}`}
             fill
             className="object-cover"
@@ -89,7 +98,7 @@ export default function GalleryCarousel({
         )}
       </div>
       <CardContent>
-        <h3 className="font-heading text-lg font-medium">{title}</h3>
+        <h2 className="font-heading text-lg font-medium">{title}</h2>
         <p className="text-secondary text-sm">{description}</p>
       </CardContent>
     </Card>

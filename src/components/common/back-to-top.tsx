@@ -4,6 +4,7 @@ import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+/** Floating button that appears after scrolling 400px and smooth-scrolls to the top. */
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 

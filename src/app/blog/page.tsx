@@ -2,6 +2,7 @@ import BlogList from "@/components/common/blog-list";
 import { PageHeader, Section } from "@/components/section";
 import { getAllBlogPosts } from "@/lib/content";
 
+/** Blog index (search + tag filter) built from the MDX posts. */
 export default function BlogPage() {
   const posts = getAllBlogPosts();
 

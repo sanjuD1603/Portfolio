@@ -1,5 +1,6 @@
 import { Section } from "@/components/section";
 
+/** `/readme` page section: Iteration 2. Content is defined in `src/data/readme.ts`. */
 export default function IterationTwoSection() {
   return (
     <Section title="Development (Iteration 2)">

@@ -8,6 +8,7 @@ import OverviewSection from "@/components/readme/overview-section";
 import SummarySection from "@/components/readme/summary-section";
 import { PageHeader } from "@/components/section";
 
+/** In-site README documenting the portfolio's discovery, design, iterations and evaluation. */
 export default function ReadmePage() {
   return (
     <main className="flex-1">

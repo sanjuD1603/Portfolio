@@ -2,6 +2,7 @@ import { Link } from "next-view-transitions";
 import ExperienceList from "@/components/experience-list";
 import { PageHeader, Section } from "@/components/section";
 
+/** Experience: full role history. Doubles as the brief's "Professional Knowledge" page. */
 export default function ExperiencePage() {
   return (
     <main className="flex-1">

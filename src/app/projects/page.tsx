@@ -2,6 +2,7 @@ import ProjectGrid from "@/components/project-grid";
 import { PageHeader, Section } from "@/components/section";
 import { getAllProjects } from "@/lib/content";
 
+/** Projects index (technology filter) built from the MDX projects. */
 export default function ProjectsPage() {
   const projects = getAllProjects();
 

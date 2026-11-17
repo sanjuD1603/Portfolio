@@ -1,5 +1,6 @@
 import Container from "@/components/common/container";
 
+/** Page title block (h1 + optional subtitle) used at the top of every page. */
 export function PageHeader({
   title,
   subtitle,
@@ -17,6 +18,7 @@ export function PageHeader({
   );
 }
 
+/** Small label with an optional h2, for headings inside a section. */
 export function SectionHeading({
   sub,
   heading,
@@ -32,6 +34,7 @@ export function SectionHeading({
   );
 }
 
+/** Titled content section with consistent spacing. */
 export function Section({
   title,
   children,

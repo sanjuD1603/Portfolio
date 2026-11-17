@@ -222,3 +222,132 @@ export const ENHANCEMENTS = [
   "Run a Lighthouse pass targeting Core Web Vitals once the above ships, since performance work is more useful after the feature set stabilizes.",
   "Give someone who does not code a simple way to update small pieces of content without editing a file directly.",
 ];
+
+/** A representative visitor, used to justify why each feature exists. */
+export type Persona = {
+  id: string;
+  name: string;
+  goal: string;
+  scenario: string;
+};
+
+/**
+ * Personas for requirements discovery. Each feature in {@link FEATURES} names
+ * the persona(s) it serves, so every feature traces back to a user need.
+ */
+export const PERSONAS: Persona[] = [
+  {
+    id: "recruiter",
+    name: "Recruiter",
+    goal: "Decide in a couple of minutes whether to shortlist me.",
+    scenario:
+      "Opens the site from a CV link, skims experience and skills, downloads the resume and wants a quick way to get in touch.",
+  },
+  {
+    id: "hiring-manager",
+    name: "Hiring manager",
+    goal: "Judge the depth of my technical work.",
+    scenario:
+      "Reads project write-ups and blog posts, filters projects by technology and asks the assistant about specific experience before booking a call.",
+  },
+  {
+    id: "academic-reviewer",
+    name: "Academic reviewer",
+    goal: "Check the portfolio against the module's requirements and engineering practice.",
+    scenario:
+      "Reads the Readme page, inspects the repository, CI pipeline and tests, and verifies that peer-review feedback was acted on.",
+  },
+];
+
+export type FeaturePriority = "Must" | "Should" | "Could";
+export type FeatureStatus = "Done" | "In progress" | "Planned";
+
+/** A feature with its MoSCoW priority, the personas it serves and its current status. */
+export type Feature = {
+  name: string;
+  priority: FeaturePriority;
+  personas: string[];
+  status: FeatureStatus;
+};
+
+/** Persona ids used in {@link FEATURES}: R = recruiter, H = hiring manager, A = academic reviewer. */
+export const FEATURES: Feature[] = [
+  {
+    name: "Experience, education and about pages",
+    priority: "Must",
+    personas: ["recruiter", "hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "Projects and blog with complete content",
+    priority: "Must",
+    personas: ["hiring-manager", "academic-reviewer"],
+    status: "Done",
+  },
+  {
+    name: "Photo and video gallery",
+    priority: "Must",
+    personas: ["academic-reviewer"],
+    status: "Done",
+  },
+  {
+    name: "Instant messaging (chat widget that reaches me)",
+    priority: "Must",
+    personas: ["recruiter", "hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "Light/dark mode, responsive layout, smooth transitions",
+    priority: "Should",
+    personas: ["recruiter", "hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "Project filter and blog search",
+    priority: "Should",
+    personas: ["hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "AI assistant grounded in portfolio data (MCP + Workers AI)",
+    priority: "Should",
+    personas: ["recruiter", "hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "Automated tests and CI checks on every push",
+    priority: "Should",
+    personas: ["academic-reviewer"],
+    status: "In progress",
+  },
+  {
+    name: "Live deployment (GitHub Pages + Worker API)",
+    priority: "Should",
+    personas: ["recruiter", "academic-reviewer"],
+    status: "In progress",
+  },
+  {
+    name: "Cal.com call scheduling",
+    priority: "Could",
+    personas: ["recruiter", "hiring-manager"],
+    status: "In progress",
+  },
+  {
+    name: "Command palette (Ctrl/⌘ K) across pages, projects and posts",
+    priority: "Could",
+    personas: ["recruiter", "hiring-manager"],
+    status: "Done",
+  },
+  {
+    name: "Umami analytics (opt-in; needs a website ID)",
+    priority: "Could",
+    personas: ["academic-reviewer"],
+    status: "In progress",
+  },
+  {
+    name: "Lighthouse CI performance and accessibility budget",
+    priority: "Could",
+    personas: ["academic-reviewer"],
+    status: "In progress",
+  },
+];

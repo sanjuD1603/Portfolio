@@ -2,6 +2,7 @@ import { ArrowRight, Notebook } from "lucide-react";
 import { Link } from "next-view-transitions";
 import type { BlogPost } from "@/lib/content";
 
+/** Link card for one blog post: date, title and two-line summary. */
 export default function BlogCard({ post }: { post: BlogPost }) {
   return (
     <Link
@@ -19,7 +20,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
           })}
         </span>
       </div>
-      <h3 className="font-semibold group-hover:text-primary">{post.title}</h3>
+      <h2 className="font-semibold group-hover:text-primary">{post.title}</h2>
       <p className="text-secondary line-clamp-2 text-sm leading-relaxed">
         {post.summary}
       </p>

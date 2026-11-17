@@ -15,6 +15,14 @@ import {
 } from "@/components/ui/card";
 import type { ProjectEntry } from "@/lib/content";
 
+/**
+ * Grid of project cards with a technology filter.
+ * The filter badges are derived from the projects' `stack` fields, so adding a
+ * project with a new technology adds a filter automatically.
+ *
+ * @param projects - Projects to show (already validated by the content loader).
+ * @param limit - Maximum cards to show after filtering (e.g. the Home page preview).
+ */
 export default function ProjectGrid({
   projects,
   limit,

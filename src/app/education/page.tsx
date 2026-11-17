@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { PageHeader, Section } from "@/components/section";
+import { assetPath } from "@/lib/assets";
 import { education } from "@/lib/data";
 
+/** Education: schools and degrees from `education.json`. */
 export default function EducationPage() {
   return (
     <main className="flex-1">
@@ -12,7 +14,7 @@ export default function EducationPage() {
             <li key={e.school} className="flex items-start gap-4">
               <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted ring-1 ring-foreground/10">
                 <Image
-                  src={e.logo}
+                  src={assetPath(e.logo)}
                   alt={e.school}
                   width={40}
                   height={40}

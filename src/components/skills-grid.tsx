@@ -9,6 +9,7 @@ const ICONS: Record<string, LucideIcon> = {
   Databases: Database,
 };
 
+/** Grid of skill groups from `skills.json`, one card per group. */
 export default function SkillsGrid() {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -23,7 +24,7 @@ export default function SkillsGrid() {
               <span className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover/skill:bg-primary group-hover/skill:text-primary-foreground">
                 <Icon className="size-4" />
               </span>
-              <h3 className="font-semibold">{g.group}</h3>
+              <h2 className="font-semibold">{g.group}</h2>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {g.items.map((i) => (

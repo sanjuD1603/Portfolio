@@ -1,5 +1,6 @@
 import { Section } from "@/components/section";
 
+/** `/readme` page section: Summary. Content is defined in `src/data/readme.ts`. */
 export default function SummarySection() {
   return (
     <Section title="Summary">

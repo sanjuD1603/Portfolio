@@ -4,8 +4,10 @@ import CalBooking from "@/components/cal-booking";
 import { PageHeader, Section } from "@/components/section";
 import SkillsGrid from "@/components/skills-grid";
 import { Button } from "@/components/ui/button";
+import { assetPath } from "@/lib/assets";
 import { awards, certificates, profile } from "@/lib/data";
 
+/** About: intro, resume download, call booking, skills, awards and certificates. */
 export default function AboutPage() {
   return (
     <main className="flex-1">
@@ -35,7 +37,8 @@ export default function AboutPage() {
           {profile.resumeUrl && (
             <Button
               className="btn-inner-shadow mt-6"
-              render={<a href={profile.resumeUrl} download />}
+              // biome-ignore lint/a11y/useAnchorContent: Button injects its children into the rendered <a>.
+              render={<a href={assetPath(profile.resumeUrl)} download />}
               nativeButton={false}
             >
               <Download />
@@ -81,7 +84,7 @@ export default function AboutPage() {
               >
                 <div className="relative aspect-[4/3] w-full bg-muted">
                   <Image
-                    src={cert.image}
+                    src={assetPath(cert.image)}
                     alt={cert.title}
                     fill
                     className="object-cover"

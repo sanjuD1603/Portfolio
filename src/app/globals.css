@@ -135,7 +135,7 @@
 }
 
 .text-secondary {
-  @apply text-[#909092] dark:text-[#909092];
+  @apply text-[#6b6b70] dark:text-[#909092];
 }
 
 /* Page fade-in animation with blur */
@@ -233,4 +233,12 @@
 
 .theme-toggle-circle::view-transition-new(root) {
   z-index: 2147483646;
+}
+
+/* Utilities the shadcn message-scroller component references (thin, non-jumping scrollbars). */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+}
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
 }

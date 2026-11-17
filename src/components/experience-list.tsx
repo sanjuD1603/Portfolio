@@ -2,13 +2,17 @@ import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { experience } from "@/lib/data";
 
+/**
+ * Work-experience timeline from `experience.json`.
+ * @param limit - Show only the most recent N roles (omit for all).
+ */
 export default function ExperienceList({ limit }: { limit?: number }) {
   return (
     <div className="flex flex-col gap-10">
       {experience.slice(0, limit).map((job) => (
         <article key={job.company + job.role} className="flex flex-col gap-3">
           <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
-            <h3 className="text-lg font-semibold">{job.role}</h3>
+            <h2 className="text-lg font-semibold">{job.role}</h2>
             <span className="text-sm text-muted-foreground">{job.period}</span>
           </div>
           <p className="text-sm text-muted-foreground">

@@ -2,6 +2,11 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "next-view-transitions";
 import { profile } from "@/lib/data";
 
+/**
+ * Pill-shaped call-to-action link that expands on hover.
+ * @param label - Button text.
+ * @param href - Destination; defaults to a `mailto:` link to the owner.
+ */
 export default function CtaPill({
   label = "Let's talk",
   href = `mailto:${profile.email}`,

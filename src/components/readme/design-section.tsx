@@ -11,6 +11,7 @@ import {
   STRUCTURE,
 } from "@/data/readme";
 
+/** `/readme` page section: Design. Content is defined in `src/data/readme.ts`. */
 export default function DesignSection() {
   return (
     <Section title="Design">

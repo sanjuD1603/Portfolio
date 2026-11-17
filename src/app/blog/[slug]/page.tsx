@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import { ContentDetail } from "@/components/content-detail";
 import { getAllBlogPosts, getBlogPost } from "@/lib/content";
 
+/** Pre-renders one page per blog post at build time (required for static export). */
 export function generateStaticParams() {
   return getAllBlogPosts().map((p) => ({ slug: p.slug }));
 }
 
+/** Blog post page; 404s if the slug does not exist. */
 export default async function BlogDetailPage({
   params,
 }: {

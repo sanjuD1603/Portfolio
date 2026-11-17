@@ -1,0 +1,10 @@
+# Copy to `.dev.vars` (same folder) for `wrangler dev`:  cp .dev.vars.example .dev.vars
+# Wrangler loads this file as local secrets. It is gitignored - never commit the real one.
+# In production, set secrets with `npx wrangler secret put <NAME>` instead.
+
+# Resend API key (https://resend.com/api-keys) used by POST /messages to email new messages.
+# Leave as-is to exercise the route locally; delivery will fail gracefully and the message is still stored.
+RESEND_API_KEY=re_your_api_key_here
+
+# Optional override for the recipient of new-message emails (defaults to OWNER_EMAIL in wrangler.jsonc).
+# OWNER_EMAIL=you@example.com

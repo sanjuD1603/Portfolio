@@ -1,0 +1,56 @@
+# Deploys the static Next.js export to GitHub Pages on every merge to main.
+# Skipped when only worker-api/ changed (that has its own pipeline).
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "worker-api/**"
+      - "**/*.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; let an in-flight deployment finish rather than cancel it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Test before deploying
+        run: npm test
+      - name: Build static export
+        run: npm run build
+        env:
+          # Project sites are served from /<repo>/ (see src/lib/assets.ts).
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # Set this repository variable to the deployed Worker API URL.
+          NEXT_PUBLIC_WORKER_API_URL: ${{ vars.WORKER_API_URL }}
+          # Optional: set the UMAMI_WEBSITE_ID repository variable to enable analytics.
+          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

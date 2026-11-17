@@ -2,6 +2,7 @@ import { Section } from "@/components/section";
 import { Badge } from "@/components/ui/badge";
 import { STACK } from "@/data/readme";
 
+/** `/readme` page section: Overview. Content is defined in `src/data/readme.ts`. */
 export default function OverviewSection() {
   return (
     <Section title="Overview">
