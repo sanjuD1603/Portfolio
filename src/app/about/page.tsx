@@ -1,5 +1,6 @@
 import { Download, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
+import CalBooking from "@/components/cal-booking";
 import { PageHeader, Section } from "@/components/section";
 import SkillsGrid from "@/components/skills-grid";
 import { Button } from "@/components/ui/button";
@@ -30,16 +31,19 @@ export default function AboutPage() {
             </a>
           </li>
         </ul>
-        {profile.resumeUrl && (
-          <Button
-            className="btn-inner-shadow mt-6"
-            render={<a href={profile.resumeUrl} download />}
-            nativeButton={false}
-          >
-            <Download />
-            Download resume
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-3">
+          {profile.resumeUrl && (
+            <Button
+              className="btn-inner-shadow mt-6"
+              render={<a href={profile.resumeUrl} download />}
+              nativeButton={false}
+            >
+              <Download />
+              Download resume
+            </Button>
+          )}
+          <CalBooking />
+        </div>
       </Section>
       <Section title="Skills">
         <SkillsGrid />
