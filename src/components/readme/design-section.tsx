@@ -1,10 +1,6 @@
 import { ArrowDown } from "lucide-react";
 import { Section } from "@/components/section";
 import {
-  CHATBOT_GATEWAY,
-  CHATBOT_ROOT,
-  CHATBOT_SERVICE_DETAILS,
-  CHATBOT_SERVICES,
   COMPONENT_ROOT,
   CONTENT_COMPONENTS,
   DEEPER_PAGES,
