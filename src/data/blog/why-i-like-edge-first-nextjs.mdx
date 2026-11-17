@@ -5,6 +5,51 @@ summary: "A short note on choosing Cloudflare Workers + Hono over a traditional 
 tags: ["Next.js", "Cloudflare Workers", "Hono"]
 ---
 
-This is a placeholder post — replace with your real write-up.
+For a while my default stack for a new Next.js project was a traditional Node server — render on
+a box somewhere, talk to a database somewhere else, scale by adding more boxes. After shipping a
+production recruitment platform on Next.js (SSR) and Hono.js on Cloudflare Workers, I don't reach
+for that default anymore. This isn't "edge computing is the future" hand-waving — it's a list of
+concrete things that changed for the better, and the tradeoffs that came with them.
 
-Edge-first architecture has changed how I think about latency and cost for small-to-medium apps.
+## What actually got better
+
+**Cold starts stopped being a planning problem.** Traditional serverless Node functions pay a real
+cold-start tax — spinning up a runtime, loading dependencies, establishing a database connection —
+often hundreds of milliseconds before a request is even handled. Workers run on V8 isolates, not
+containers, so there's no runtime to boot. In practice this meant I stopped having to think about
+"keep-warm" pings or provisioned concurrency just to keep P95 latency sane.
+
+**Data locality stopped requiring a CDN diagram.** With D1 for the database and R2 for file
+storage, both living on the same platform as the Worker, there's no separate network hop out to a
+managed database in a specific AWS region. The request, the compute, and (for read-heavy paths)
+the data all sit close together by default, not because of a deliberate multi-region setup I had
+to design.
+
+**Deployment got boring, in a good way.** `wrangler deploy` pushes code globally; there's no
+separate step for provisioning a server, configuring a load balancer, or managing instance counts.
+For a small team shipping fast, removing an entire category of infrastructure decisions is a real
+velocity win, not just a convenience.
+
+## The tradeoffs that are actually real
+
+Edge-first isn't free, and I don't think it's the right default for everything:
+
+- **The runtime is not Node.** Workers run a Node-compatible subset (`nodejs_compat`), but some
+  npm packages that reach deep into Node internals (certain native bindings, some older ORMs)
+  simply won't run. This shaped which libraries I could use — Drizzle ORM and Hono were chosen
+  partly *because* they're built with edge runtimes in mind, not despite it.
+- **CPU time is metered per request.** Long-running, CPU-heavy work (large PDF generation, heavy
+  image processing) doesn't fit the Workers execution model well. Those workloads either need to
+  be offloaded elsewhere or redesigned to be incremental.
+- **Debugging is different.** There's no SSH-ing into a box to tail logs the way you might with a
+  traditional VM. Cloudflare's observability tooling covers this, but it's a different mental model
+  if you're used to a classic server.
+
+## Where I land
+
+For small-to-medium apps — the recruitment platform handling a few thousand records, not a
+data warehouse — the latency and cost profile of edge-first Next.js has been a clear win, and the
+operational simplicity compounds over the life of the project. I'd still reach for a traditional
+server for workloads that are genuinely CPU-heavy or need full Node compatibility. But as a
+default starting point for a new web app, edge-first is where I start now, and I've stopped
+needing a strong reason not to.

@@ -5,18 +5,85 @@ summary: "Notes on cutting storage by 99.9% while moving a production recruitmen
 tags: ["Cloudflare", "D1", "Databases"]
 ---
 
-This is a placeholder post — replace with your real write-up.
+While building a recruitment platform at SJ Digitech on Next.js and Hono, I inherited a MySQL
+database that had quietly grown to 5.3 GB. Almost all of that size came from one decision made
+early on: candidate resumes were stored as base64-encoded text directly in a `resumes` column
+instead of as files. Every upload bloated the row, every backup got slower, and every query
+that touched that table dragged the whole file along with it.
 
-## The problem
+The fix ended up being a full migration to Cloudflare D1 (SQLite running at the edge), paired
+with Cloudflare R2 for the actual binary files. This post is the real sequence of what changed,
+not a generic "how D1 works" guide.
 
-We had a 5.3 GB MySQL database full of base64-encoded resumes sitting in text columns.
+## Why D1 instead of just optimizing MySQL
 
-## What changed
+We were already running the app on Cloudflare Workers via Hono, so a managed MySQL instance
+meant an extra network hop out of the edge on every request. D1 removes that hop entirely —
+the database lives in the same platform as the Worker, with low-latency reads close to where
+the request is served. For a platform-sized dataset (not analytics-scale), that tradeoff was
+worth the migration effort.
 
-- Moved binary resume files to Cloudflare R2
-- Normalized and cleaned up dead columns
-- Migrated the schema to SQLite-compatible types for D1
+## Step 1: get resumes out of the database
 
-## Result
+Before touching schema or data types, I moved every resume out of the `resumes` column and into
+R2 as an object, keyed by candidate ID:
 
-Database size dropped from 5.3 GB to roughly 5 MB.
+```ts
+const key = `resumes/${candidateId}.pdf`;
+await env.RESUME_BUCKET.put(key, fileBuffer, {
+  httpMetadata: { contentType: "application/pdf" },
+});
+await db
+  .update(candidates)
+  .set({ resumeKey: key })
+  .where(eq(candidates.id, candidateId));
+```
+
+This single change accounted for most of the eventual size reduction. Base64 text in a
+database column is roughly 33% larger than the binary it encodes, on top of the database engine
+having to read, index and back up that bloat every single time — none of which it needs to do
+once the file lives in object storage and the database just holds a pointer.
+
+## Step 2: convert the schema to SQLite-compatible types
+
+D1 is SQLite under the hood, so a handful of MySQL-isms needed to change:
+
+- **Auto-increment columns.** MySQL's `AUTO_INCREMENT INT` became SQLite's
+  `INTEGER PRIMARY KEY AUTOINCREMENT` — functionally similar, but SQLite only guarantees the
+  autoincrement behavior on a column that is *exactly* `INTEGER PRIMARY KEY`, not just any
+  integer column with a constraint attached.
+- **Enums.** MySQL `ENUM('pending', 'reviewed', 'rejected')` doesn't exist in SQLite. These
+  became plain `TEXT` columns with a `CHECK` constraint, enforced the same way at the
+  application layer with Zod/Drizzle types.
+- **Booleans.** MySQL `TINYINT(1)` became SQLite's native `INTEGER` 0/1, which Drizzle ORM's
+  `boolean()` helper maps transparently, so the application code didn't need to change.
+- **Foreign keys.** These carried over conceptually, but SQLite enforces them only when
+  `PRAGMA foreign_keys = ON` is set per connection — D1 enables this by default, but it's worth
+  verifying explicitly rather than assuming MySQL's always-on behavior.
+
+## Step 3: export, transform, import
+
+With no downtime window to work with, the approach was: export MySQL to CSV per table, write a
+small transform script to reshape rows into the new schema (mainly re-pointing resume columns
+at their new R2 keys), then batch-insert into D1 using Wrangler's D1 execute command:
+
+```bash
+wrangler d1 execute recruitment-db --remote --file=./migrations/0001_seed.sql
+```
+
+D1's batch insert has a practical statement-size limit, so large tables needed chunking —
+candidates were inserted in batches of 500 rows rather than one enormous `INSERT`.
+
+## The result
+
+After cleanup and the move to R2, the database went from 5.3 GB to roughly 5 MB — a 99.9%
+reduction. Query latency for candidate search dropped noticeably too, partly from the smaller
+working set and partly from D1 sitting at the edge instead of behind a network round trip.
+
+## What I'd do differently
+
+I'd push back harder, earlier, on storing binary data in a relational column at all. The
+migration wasn't technically difficult once scoped — the real lesson was that a bad storage
+decision compounds quietly until the database itself becomes the bottleneck, and by the time
+it's obvious, the fix touches every layer of the app: the schema, the upload flow, the backup
+strategy, and the deployment platform.
