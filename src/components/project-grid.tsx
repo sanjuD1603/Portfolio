@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllProjects } from "@/lib/project";
+import { getAllProjects } from "@/lib/content";
 
 export default function ProjectGrid({ limit }: { limit?: number }) {
   const projects = getAllProjects().slice(0, limit);

@@ -1,6 +1,6 @@
 import BlogCard from "@/components/common/blog-card";
 import { PageHeader, Section } from "@/components/section";
-import { getAllBlogPosts } from "@/lib/blog";
+import { getAllBlogPosts } from "@/lib/content";
 
 export default function BlogPage() {
   const posts = getAllBlogPosts();

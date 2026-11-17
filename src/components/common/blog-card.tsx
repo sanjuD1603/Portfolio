@@ -1,6 +1,6 @@
 import { ArrowRight, Notebook } from "lucide-react";
 import { Link } from "next-view-transitions";
-import type { BlogPost } from "@/lib/blog";
+import type { BlogPost } from "@/lib/content";
 
 export default function BlogCard({ post }: { post: BlogPost }) {
   return (
