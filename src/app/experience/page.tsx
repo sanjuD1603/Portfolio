@@ -11,9 +11,10 @@ export default function ExperiencePage() {
       />
       <Section title="Work">
         <p className="text-secondary mb-6 text-sm leading-relaxed">
-          This page, together with Home, About and Education, makes up the Professional
-          Knowledge section of this portfolio — covering the roles, technology stacks and
-          outcomes that demonstrate my software engineering background.
+          This page, together with Home, About and Education, makes up the
+          Professional Knowledge section of this portfolio — covering the roles,
+          technology stacks and outcomes that demonstrate my software
+          engineering background.
         </p>
         <ExperienceList />
         <Link

@@ -56,7 +56,8 @@ export default function ContactPopup() {
         </div>
         {copyFailed && (
           <p className="text-destructive text-xs">
-            Couldn&apos;t copy automatically — select the address above and copy it manually.
+            Couldn&apos;t copy automatically — select the address above and copy
+            it manually.
           </p>
         )}
         {/* biome-ignore lint/a11y/useAnchorContent: content is supplied via Button's children through the render prop */}

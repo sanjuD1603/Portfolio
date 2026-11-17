@@ -11,9 +11,7 @@ export default function GithubCalendar({ username }: { username: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(
-      `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
-    )
+    fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`)
       .then((res) => {
         if (!res.ok) throw new Error("failed");
         return res.json();
@@ -32,7 +30,8 @@ export default function GithubCalendar({ username }: { username: string }) {
   if (error) {
     return (
       <p className="text-secondary text-sm">
-        GitHub activity couldn&apos;t be loaded right now. Try refreshing the page.
+        GitHub activity couldn&apos;t be loaded right now. Try refreshing the
+        page.
       </p>
     );
   }
