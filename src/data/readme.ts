@@ -5,6 +5,7 @@ import {
   Globe,
   LayoutGrid,
   type LucideIcon,
+  Server,
 } from "lucide-react";
 
 export const STACK = [
@@ -132,6 +133,12 @@ export const PIPELINE: { icon: LucideIcon; title: string; detail: string }[] = [
     title: "What you see",
     detail: "The finished site, in your browser",
   },
+  {
+    icon: Server,
+    title: "Worker API + D1 (beyond the browser)",
+    detail:
+      "The chat widget and the lead form reach past the static site to a separate Cloudflare Worker (worker-api/), which reads and writes a D1 database - see the chatbot diagram below for the full path.",
+  },
 ];
 
 export const SITE_PAGES = [
@@ -151,7 +158,7 @@ export const DEEPER_PAGES: { parent: string; child: string }[] = [
 
 export const COMPONENT_ROOT = "Layout (root)";
 
-export const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section"];
+export const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section", "ChatWidget"];
 
 export const CONTENT_COMPONENTS = ["Badge", "Card", "GalleryCarousel", "Hero"];
 
@@ -165,6 +172,11 @@ export const COMPONENTS: { name: string; detail: string }[] = [
     name: "PageHeader and Section",
     detail:
       "Keep each page's title and spacing consistent. Used on every page except Home, which uses Hero instead of PageHeader.",
+  },
+  {
+    name: "ChatWidget",
+    detail:
+      "Mounted once in the root layout, like Navbar - but it's the only component that talks to a server. It calls the separate Worker API (worker-api/), which is backed by D1; see the chatbot diagram below for the full path.",
   },
   {
     name: "Badge",
