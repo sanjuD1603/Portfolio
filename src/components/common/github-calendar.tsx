@@ -29,7 +29,13 @@ export default function GithubCalendar({ username }: { username: string }) {
     };
   }, [username]);
 
-  if (error) return null;
+  if (error) {
+    return (
+      <p className="text-secondary text-sm">
+        GitHub activity couldn&apos;t be loaded right now. Try refreshing the page.
+      </p>
+    );
+  }
   if (!data) {
     return (
       <div className="h-[140px] w-full animate-pulse rounded-lg bg-muted" />

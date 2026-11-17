@@ -18,13 +18,18 @@ const EMAIL = profile.email;
 
 export default function ContactPopup() {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(EMAIL);
+      setCopyFailed(false);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    } catch {
+      setCopyFailed(true);
+      setTimeout(() => setCopyFailed(false), 2000);
+    }
   }
 
   return (
@@ -49,6 +54,11 @@ export default function ContactPopup() {
             {copied ? <Check /> : <Copy />}
           </Button>
         </div>
+        {copyFailed && (
+          <p className="text-destructive text-xs">
+            Couldn&apos;t copy automatically — select the address above and copy it manually.
+          </p>
+        )}
         {/* biome-ignore lint/a11y/useAnchorContent: content is supplied via Button's children through the render prop */}
         <Button render={<a href={`mailto:${EMAIL}`} />} nativeButton={false}>
           <Mail />
