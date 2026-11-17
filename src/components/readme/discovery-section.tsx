@@ -91,12 +91,19 @@ export default function DiscoverySection() {
             Phase 2
           </span>
           <ul className="mt-2 flex flex-col gap-2 text-sm text-muted-foreground">
-            {PHASE_TWO.map((f) => (
-              <li key={f} className="flex items-start gap-2">
-                <Circle className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                {f}
-              </li>
-            ))}
+            {PHASE_TWO.map((f) =>
+              f.includes("(done)") ? (
+                <li key={f} className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                  {f}
+                </li>
+              ) : (
+                <li key={f} className="flex items-start gap-2">
+                  <Circle className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                  {f}
+                </li>
+              ),
+            )}
           </ul>
         </div>
       </div>
