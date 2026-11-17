@@ -6,7 +6,24 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "PortfolioMCP", "class_name": "PortfolioMCP" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PortfolioMCP"] }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dinesh-portfolio-leads",
+      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID"
+    }
+  ],
+  "vars": {
+    "OWNER_EMAIL": "sanjudinesh169@gmail.com"
   }
-  // AI binding, D1 binding and the RESEND_API_KEY secret are added when the
-  // chat/messages routes are built (see worker-api/src/chat.ts, messages.ts).
+  // RESEND_API_KEY is a secret, set with `wrangler secret put RESEND_API_KEY`
+  // after deployment — see README.md "Manual setup before going live".
 }
