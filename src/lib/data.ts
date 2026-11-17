@@ -4,7 +4,6 @@ export const profile = {
   intro:
     "I build production-grade web apps with Next.js, TypeScript and edge infrastructure. Currently shipping a recruitment platform on Cloudflare Workers at SJDigitech.",
   email: "sanjudinesh169@gmail.com",
-  phone: "+91 7989302843",
   github: "https://github.com/SanjuD1603",
   linkedin: "https://www.linkedin.com/in/mogili-dinesh-reddy-66023423a/",
   location: "Hyderabad, India",
