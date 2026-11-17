@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist_Mono, Hanken_Grotesk } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
+import { ChatProvider } from "@/components/chat/chat-provider";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import BackToTop from "@/components/common/back-to-top";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -46,12 +48,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             disableTransitionOnChange
           >
             <ReactLenis root>
-              <ThemeAside />
-              <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col border-x">
-                <Navbar />
-                {children}
-              </div>
-              <BackToTop />
+              <ChatProvider>
+                <ThemeAside />
+                <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col border-x">
+                  <Navbar />
+                  {children}
+                </div>
+                <BackToTop />
+                <ChatWidget />
+              </ChatProvider>
             </ReactLenis>
           </ThemeProvider>
         </body>
