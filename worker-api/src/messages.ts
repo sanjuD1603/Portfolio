@@ -1,8 +1,16 @@
+import { count, eq, and, gt } from "drizzle-orm";
 import type { Context } from "hono";
 import { z } from "zod";
+import { sha256Hex } from "./crypto";
 import { getDb, schema } from "./db";
 import { sendOwnerEmail } from "./email";
 import type { Env } from "./env";
+import { startOfUtcDay } from "./rate-limit";
+
+/** Per-IP cap on leads per hour - stops one client flooding the owner's inbox. */
+export const MAX_MESSAGES_PER_IP_PER_HOUR = 5;
+/** Global circuit breaker: once this many leads arrive across all IPs today, the rest wait until tomorrow. */
+export const MAX_MESSAGES_PER_DAY = 50;
 
 const MESSAGE_REQUEST_SCHEMA = z.object({
   name: z.string().trim().max(200).optional(),
@@ -26,16 +34,46 @@ export async function handleMessage(c: Context<{ Bindings: Env }>) {
   }
 
   const { name, email, message } = parsed.data;
+  const db = getDb(c.env.DB);
+  const now = new Date();
+  const ip = c.req.header("CF-Connecting-IP") ?? "unknown";
+  const ipHash = await sha256Hex(ip);
 
   try {
-    await getDb(c.env.DB)
-      .insert(schema.messages)
-      .values({
-        name: name ?? null,
-        email: email ?? null,
-        message,
-        createdAt: new Date().toISOString(),
-      });
+    const [dailyTotal] = await db
+      .select({ n: count() })
+      .from(schema.messages)
+      .where(gt(schema.messages.createdAt, startOfUtcDay(now)));
+    if ((dailyTotal?.n ?? 0) >= MAX_MESSAGES_PER_DAY) {
+      return c.json(
+        { error: "Daily message limit reached. Try again tomorrow." },
+        429,
+      );
+    }
+
+    const [recent] = await db
+      .select({ n: count() })
+      .from(schema.messages)
+      .where(
+        and(
+          eq(schema.messages.ipHash, ipHash),
+          gt(
+            schema.messages.createdAt,
+            new Date(now.getTime() - 60 * 60 * 1000).toISOString(),
+          ),
+        ),
+      );
+    if ((recent?.n ?? 0) >= MAX_MESSAGES_PER_IP_PER_HOUR) {
+      return c.json({ error: "Too many messages sent. Try again later." }, 429);
+    }
+
+    await db.insert(schema.messages).values({
+      name: name ?? null,
+      email: email ?? null,
+      message,
+      ipHash,
+      createdAt: now.toISOString(),
+    });
   } catch (err) {
     console.error("failed to store message in D1", err);
     return c.json(

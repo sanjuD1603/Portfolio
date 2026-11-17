@@ -1,8 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { handleMessage } from "../messages";
+import {
+  handleMessage,
+  MAX_MESSAGES_PER_DAY,
+  MAX_MESSAGES_PER_IP_PER_HOUR,
+} from "../messages";
 import { createTestDb, harness } from "../test-helpers";
 
 const baseEnv = { RESEND_API_KEY: "re_test", OWNER_EMAIL: "owner@example.test" };
+const ip = { "CF-Connecting-IP": "203.0.113.7" };
 
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
@@ -56,6 +61,39 @@ describe("POST /messages", () => {
     const res = await post({ message: "Hi" });
     expect(res.status).toBe(500);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("rate-limits message sending per IP", async () => {
+    const { d1 } = createTestDb();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true }));
+    const post = harness("/messages", handleMessage, { ...baseEnv, DB: d1 });
+    const body = { message: "Hi" };
+    for (let i = 0; i < MAX_MESSAGES_PER_IP_PER_HOUR; i++) {
+      expect((await post(body, { headers: ip })).status).toBe(200);
+    }
+    expect((await post(body, { headers: ip })).status).toBe(429);
+    // a different IP is unaffected
+    expect(
+      (await post(body, { headers: { "CF-Connecting-IP": "198.51.100.1" } })).status,
+    ).toBe(200);
+  });
+
+  it("trips a global daily cap once enough leads arrive, regardless of IP", async () => {
+    const { d1 } = createTestDb();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true }));
+    const post = harness("/messages", handleMessage, { ...baseEnv, DB: d1 });
+    for (let i = 0; i < MAX_MESSAGES_PER_DAY; i++) {
+      const res = await post(
+        { message: "Hi" },
+        { headers: { "CF-Connecting-IP": `203.0.113.${i % 255}` } },
+      );
+      expect(res.status).toBe(200);
+    }
+    const res = await post(
+      { message: "Hi" },
+      { headers: { "CF-Connecting-IP": "198.51.100.42" } },
+    );
+    expect(res.status).toBe(429);
   });
 
   it.each([

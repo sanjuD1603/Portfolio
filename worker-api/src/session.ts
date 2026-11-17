@@ -4,11 +4,14 @@ import { z } from "zod";
 import { generateToken, sha256Hex } from "./crypto";
 import { type Db, getDb, schema } from "./db";
 import type { Env } from "./env";
+import { startOfUtcDay } from "./rate-limit";
 
 /** How long a visitor's token stays valid. */
 export const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 /** Per-IP cap on new sessions per hour - stops one client minting unlimited sessions. */
 export const MAX_SESSIONS_PER_IP_PER_HOUR = 5;
+/** Global circuit breaker: once this many sessions start across all IPs today, the rest wait until tomorrow. */
+export const MAX_SESSIONS_PER_DAY = 100;
 
 const SESSION_REQUEST_SCHEMA = z.object({
   name: z.string().trim().min(1).max(100),
@@ -37,6 +40,17 @@ export async function handleCreateSession(c: Context<{ Bindings: Env }>) {
   const ipHash = await sha256Hex(ip);
 
   try {
+    const [dailyTotal] = await db
+      .select({ n: count() })
+      .from(schema.sessions)
+      .where(gt(schema.sessions.createdAt, startOfUtcDay(now)));
+    if ((dailyTotal?.n ?? 0) >= MAX_SESSIONS_PER_DAY) {
+      return c.json(
+        { error: "Daily chat limit reached. Try again tomorrow." },
+        429,
+      );
+    }
+
     const [recent] = await db
       .select({ n: count() })
       .from(schema.sessions)

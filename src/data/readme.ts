@@ -157,7 +157,12 @@ export const DEEPER_PAGES: { parent: string; child: string }[] = [
 
 export const COMPONENT_ROOT = "Layout (root)";
 
-export const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section", "ChatWidget"];
+export const STRUCTURAL_COMPONENTS = [
+  "Navbar",
+  "PageHeader",
+  "Section",
+  "ChatWidget",
+];
 
 export const CONTENT_COMPONENTS = ["Badge", "Card", "GalleryCarousel", "Hero"];
 

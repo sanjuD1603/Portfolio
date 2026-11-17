@@ -1,15 +1,22 @@
 import { vi } from "vitest";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 import { type Handler, Hono } from "hono";
 import type { Env } from "./env";
 
-const MIGRATION_SQL = readFileSync(
-  resolve(dirname(fileURLToPath(import.meta.url)), "../migrations/0000_init.sql"),
-  "utf8",
+const MIGRATIONS_DIR = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../migrations",
 );
+
+/** Every migration's SQL, in filename order - so tests run against the schema `wrangler d1 migrations apply` would produce. */
+const MIGRATION_SQL = readdirSync(MIGRATIONS_DIR)
+  .filter((f) => f.endsWith(".sql"))
+  .sort()
+  .map((f) => readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"))
+  .join("\n--> statement-breakpoint\n");
 
 type Param = string | number | null;
 

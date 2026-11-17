@@ -4,6 +4,7 @@ import { getDb } from "../db";
 import {
   authenticate,
   handleCreateSession,
+  MAX_SESSIONS_PER_DAY,
   MAX_SESSIONS_PER_IP_PER_HOUR,
 } from "../session";
 import { createTestDb, harness } from "../test-helpers";
@@ -51,6 +52,22 @@ describe("POST /sessions", () => {
     expect((await post(body, { headers: ip })).status).toBe(429);
     // a different IP is unaffected
     expect((await post(body, { headers: { "CF-Connecting-IP": "198.51.100.1" } })).status).toBe(201);
+  });
+
+  it("trips a global daily cap once enough sessions start, regardless of IP", async () => {
+    const { d1 } = createTestDb();
+    const post = harness("/sessions", handleCreateSession, { DB: d1 });
+    const body = { name: "Ada", email: "ada@example.test" };
+    for (let i = 0; i < MAX_SESSIONS_PER_DAY; i++) {
+      const res = await post(body, {
+        headers: { "CF-Connecting-IP": `203.0.113.${i % 255}` },
+      });
+      expect(res.status).toBe(201);
+    }
+    const res = await post(body, {
+      headers: { "CF-Connecting-IP": "198.51.100.42" },
+    });
+    expect(res.status).toBe(429);
   });
 
   it.each([

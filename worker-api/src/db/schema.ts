@@ -1,13 +1,19 @@
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 /** Leads sent through the chat widget's "Message me" form (`POST /messages`). */
-export const messages = sqliteTable("messages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name"),
-  email: text("email"),
-  message: text("message").notNull(),
-  createdAt: text("created_at").notNull(),
-});
+export const messages = sqliteTable(
+  "messages",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    name: text("name"),
+    email: text("email"),
+    message: text("message").notNull(),
+    /** Nullable: rows written before this column existed have none. */
+    ipHash: text("ip_hash"),
+    createdAt: text("created_at").notNull(),
+  },
+  (t) => [index("messages_ip_created_idx").on(t.ipHash, t.createdAt)],
+);
 
 /**
  * One row per chat visitor. The bearer token that proves ownership of a
