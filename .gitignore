@@ -46,3 +46,6 @@ next-env.d.ts
 .wrangler/
 worker-api/.wrangler/
 worker-api/worker-configuration.d.ts
+
+# local tooling config (never part of the project submission)
+.claude/
