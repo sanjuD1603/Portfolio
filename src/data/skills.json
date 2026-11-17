@@ -1,0 +1,45 @@
+[
+  {
+    "group": "Languages",
+    "items": [
+      "JavaScript",
+      "TypeScript",
+      "C++",
+      "Solidity",
+      "SQL",
+      "Bash",
+      "HTML",
+      "CSS"
+    ]
+  },
+  {
+    "group": "Frameworks",
+    "items": [
+      "Next.js",
+      "React.js",
+      "Node.js",
+      "Express.js",
+      "Hono.js",
+      "Tailwind CSS",
+      "Drizzle ORM",
+      "Zod",
+      "TanStack Table"
+    ]
+  },
+  {
+    "group": "Web3",
+    "items": [
+      "Web3.js",
+      "Ethers.js",
+      "Hardhat",
+      "Truffle",
+      "Ganache",
+      "Pinata IPFS",
+      "Smart Contracts"
+    ]
+  },
+  {
+    "group": "Databases",
+    "items": ["PostgreSQL", "MySQL", "SQLite (Cloudflare D1)", "MongoDB"]
+  }
+]

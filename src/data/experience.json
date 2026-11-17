@@ -1,0 +1,65 @@
+[
+  {
+    "role": "Full Stack Developer",
+    "company": "SJ Digitech Pvt Ltd",
+    "period": "Aug 2025 – Aug 2026",
+    "location": "Hyderabad, India",
+    "link": "https://frontend-hrms.sjdigitech.workers.dev/login",
+    "stack": [
+      "Next.js",
+      "Hono",
+      "Cloudflare Workers",
+      "Cloudflare D1",
+      "Cloudflare R2",
+      "TanStack Table",
+      "Drizzle ORM",
+      "Shadcn UI",
+      "Tailwind CSS"
+    ],
+    "points": [
+      "Architected a production-grade recruitment platform using Next.js (SSR) and Hono.js on Cloudflare Workers, optimizing for edge-level performance and real-world user experience.",
+      "Migrated and optimized the database from MySQL to Cloudflare D1 (SQLite), achieving a 99.9% reduction in storage (5.3 GB to 5 MB) through data cleanup and moving large assets to Cloudflare R2.",
+      "Integrated Cloudflare R2 for resume storage to offload large binary files from the database, and built server-side paginated, filterable and virtualized data interfaces to handle 2K+ records.",
+      "Developed and deployed a full-stack social welfare platform using Next.js and MongoDB, with secure donation workflows, volunteer recruitment and modern UI with Shadcn UI and Aceternity UI."
+    ]
+  },
+  {
+    "role": "Full Stack Developer (Intern)",
+    "company": "Oruphones, Mobilics India Private Limited",
+    "period": "Feb 2025 – Aug 2025",
+    "location": "Remote, India",
+    "link": "https://www.oruphones.com/",
+    "stack": [
+      "Next.js",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Tailwind CSS",
+      "ShadCN UI"
+    ],
+    "points": [
+      "Redesigned core pages of Oruphones.com (Phase 2) with Next.js, Tailwind CSS and ShadCN, improving UI/UX, responsiveness, component reusability and page load performance.",
+      "Strengthened backend reliability by fixing routing and search issues, resolving location-based 404 errors and implementing secure Google reCAPTCHA authentication.",
+      "Delivered major SEO improvements (URL restructuring, canonical tags, 301 redirects, metadata) and fixed critical bugs using regex and state optimization."
+    ]
+  },
+  {
+    "role": "Research Intern – Electronic Health Records",
+    "company": "Dept. of CSE, National Institute of Technology Warangal",
+    "period": "May 2025 – Jul 2025",
+    "location": "Warangal, India",
+    "stack": [
+      "React.js",
+      "Solidity",
+      "IPFS",
+      "Pinata",
+      "Web3.js",
+      "MetaMask",
+      "Ganache"
+    ],
+    "points": [
+      "Architected a decentralized health record system using Solidity and IPFS with Pinata for distributed storage, reducing record retrieval delays by 20%.",
+      "Integrated RBAC and appointment booking through a responsive React.js interface with Web3-based smart contract communication for secure, role-specific interactions."
+    ]
+  }
+]

@@ -1,4 +1,4 @@
-import { Download, Mail, MapPin, Phone } from "lucide-react";
+import { Download, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { PageHeader, Section } from "@/components/section";
 import SkillsGrid from "@/components/skills-grid";

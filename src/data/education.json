@@ -1,0 +1,20 @@
+[
+  {
+    "school": "University of Limerick",
+    "degree": "MSc in Software Engineering",
+    "period": "2025 – 2026",
+    "logo": "/education/university-of-limerick.png"
+  },
+  {
+    "school": "IIIT Vadodara – ICD",
+    "degree": "Bachelor of Computer Science",
+    "period": "2021 – 2025",
+    "logo": "/education/iiit-vadodara.png"
+  },
+  {
+    "school": "Sri Chaitanya IIT Academy, Hyderabad",
+    "degree": "Telangana State Board of Intermediate Education",
+    "period": "2019 – 2021",
+    "logo": "/education/sri-chaitanya.png"
+  }
+]
