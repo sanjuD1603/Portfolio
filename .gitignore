@@ -17,6 +17,8 @@ worker-api/node_modules
 # next.js
 /.next/
 /out/
+/AGENTS.md
+/CLAUDE.md
 
 # production
 /build
