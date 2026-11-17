@@ -1,7 +1,13 @@
-import GalleryCarousel from "@/components/gallery-carousel";
+import dynamic from "next/dynamic";
 import { PageHeader, Section } from "@/components/section";
 import videoGalleryEvents from "@/data/gallery-videos.json";
 import { galleryEvents } from "@/lib/data";
+
+const GalleryCarousel = dynamic(() => import("@/components/gallery-carousel"), {
+  loading: () => (
+    <div className="aspect-video w-full animate-pulse rounded-xl bg-muted" />
+  ),
+});
 
 export default function GalleryPage() {
   return (

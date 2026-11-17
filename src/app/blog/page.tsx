@@ -1,4 +1,4 @@
-import BlogCard from "@/components/common/blog-card";
+import BlogList from "@/components/common/blog-list";
 import { PageHeader, Section } from "@/components/section";
 import { getAllBlogPosts } from "@/lib/content";
 
@@ -12,11 +12,7 @@ export default function BlogPage() {
         {posts.length === 0 ? (
           <p className="text-secondary">No posts yet. Check back soon.</p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
-            ))}
-          </div>
+          <BlogList posts={posts} />
         )}
       </Section>
     </main>
