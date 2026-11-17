@@ -1,0 +1,78 @@
+---
+title: "Web performance fundamentals: what the metrics are really telling you"
+date: "2026-10-14"
+summary: "A plain-English guide to Core Web Vitals, what typically makes each one slow, and a sensible order for fixing things."
+tags: ["Performance", "Web", "Accessibility"]
+---
+
+Performance advice often arrives as a long checklist of tricks. It is more useful to understand what
+the main metrics measure, because then the right fix usually becomes obvious. This is a short tour of
+the ones that matter for most websites.
+
+## Measure real experience, not just a score
+
+There are two kinds of data. **Lab data** comes from running a tool such as Lighthouse in a controlled
+setup: repeatable, great for catching regressions, but it is a simulation. **Field data** comes from
+real visitors on real devices and networks, which is what actually reflects the experience. Use lab data
+to debug and field data to decide whether a problem is real.
+
+## The three Core Web Vitals
+
+**Largest Contentful Paint (LCP)** is how long it takes for the biggest visible element, usually a hero
+image or headline, to appear. It answers "when did the page look loaded?". A good result is generally
+considered to be 2.5 seconds or under. It is dragged down by slow server responses, render-blocking
+CSS and scripts, and large unoptimised images.
+
+**Interaction to Next Paint (INP)** measures how quickly the page responds visually after a click, tap or
+key press, looking at interactions across the whole visit. It replaced First Input Delay as a Core Web
+Vital in 2024. The usual culprit is too much JavaScript running on the main thread, so the browser
+cannot respond until it finishes.
+
+**Cumulative Layout Shift (CLS)** captures how much the page jumps around while loading, the annoying
+moment you go to tap a button and an image pushes it away. It is caused by images, embeds and ads
+without reserved space, and by late-loading fonts or injected content.
+
+## What to fix first, in order
+
+1. **Ship less JavaScript.** It is the most expensive byte on the web, because it must be downloaded,
+   parsed and executed. Remove unused dependencies, split code so each page loads only what it needs,
+   and load heavy widgets lazily, only when they are about to be seen.
+2. **Optimise images.** Serve modern formats such as WebP or AVIF, size images to the space they are
+   shown in, and let off-screen images load lazily. Don't lazy-load the main hero image, since that
+   delays your LCP.
+3. **Reserve space.** Give images and embeds explicit `width` and `height` (or an `aspect-ratio`) so the
+   layout doesn't move when they arrive.
+4. **Handle fonts deliberately.** Use `font-display: swap` or an equivalent, preload the one or two
+   fonts you really need, and keep the number of font files small.
+5. **Cache well.** Hashed static assets can be cached for a year; see the separate post on caching.
+
+```html
+<!-- Reserve space and defer work for below-the-fold images -->
+<img
+  src="/photo.webp"
+  alt="A description of the photo"
+  width="800"
+  height="600"
+  loading="lazy"
+  decoding="async"
+/>
+```
+
+## Performance is accessibility too
+
+A slow page is hardest on people with older devices, limited data or poor connections. Fast sites are
+also more usable with assistive technology: less JavaScript means fewer things that can break focus or
+announcements. Respecting the `prefers-reduced-motion` setting for animations is another small change
+that helps both speed and comfort.
+
+## Make it a habit, not a project
+
+The easiest way to stay fast is to notice slowdowns the moment they are introduced. Running Lighthouse
+in your continuous-integration pipeline, with thresholds that fail the build when a score drops, turns
+performance from an occasional clean-up into a standing guardrail. Set a budget, watch the trend, and
+fix regressions while the change that caused them is still fresh in your mind.
+
+## The one-line summary
+
+Send less, load it later, reserve space for what's coming, and measure with real users in mind. Most
+slow sites are fixed by doing those four things well.

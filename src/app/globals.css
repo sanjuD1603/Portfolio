@@ -8,6 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-1: var(--brand-1);
+  --color-brand-2: var(--brand-2);
+  --color-brand-3: var(--brand-3);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -50,72 +53,85 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Palette: warm off-white light theme, shadcn "neutral" ramp. */
+  --background: #f9f9f9;
+  --foreground: #100f0f;
+  --card: #f9f9f9;
+  --card-foreground: #100f0f;
+  --popover: #f9f9f9;
+  --popover-foreground: #100f0f;
+  --primary: #171717;
+  --primary-foreground: #fafafa;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #171717;
+  --destructive: #df2225;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #a1a1a1;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.45rem;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #100f0f;
+  --sidebar-primary: #171717;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #a1a1a1;
+  /* Brand accents (indigo > violet > cyan). Used for gradients and glows, never for small body text. */
+  --brand-1: #4f46e5;
+  --brand-2: #7c3aed;
+  --brand-3: #0e7490;
+  --grid-line: rgb(16 15 15 / 0.06);
+  --aurora-strength: 16%;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Warm near-black rather than a cool gray; borders are translucent white so edges stay soft. */
+  --background: #100f0f;
+  --foreground: #fafafa;
+  --card: #171717;
+  --card-foreground: #fafafa;
+  --popover: #171717;
+  --popover-foreground: #fafafa;
+  --primary: #d4d4d4;
+  --primary-foreground: #171717;
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+  --muted: #262626;
+  --muted-foreground: #a1a1a1;
+  --accent: #404040;
+  --accent-foreground: #fafafa;
+  --destructive: #ff6568;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #737373;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar: #171717;
+  --sidebar-foreground: #fafafa;
   --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #737373;
+  --brand-1: #818cf8;
+  --brand-2: #a78bfa;
+  --brand-3: #22d3ee;
+  --grid-line: rgb(255 255 255 / 0.06);
+  --aurora-strength: 26%;
 }
 
 @layer base {
@@ -138,23 +154,23 @@
   @apply text-[#6b6b70] dark:text-[#909092];
 }
 
-/* Page fade-in animation with blur */
-@keyframes fadeInBlur {
-  0% {
-    opacity: 0.2;
-    filter: blur(5px);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0px);
+/*
+ * Scroll reveals are driven by GSAP (components/common/reveal.tsx). Until the component has run
+ * (it sets data-revealed), reveal targets stay invisible so they don't flash before animating.
+ * Only when scripting is on and motion is allowed - with JS off or reduced motion, content shows.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    /* Failsafe: if hydration is slow or fails, never leave content hidden for more than 3s. */
+    animation: reveal-failsafe 0s linear 3s forwards;
   }
 }
 
-.animate-fade-in-blur {
-  animation: fadeInBlur 0.5s ease-out forwards;
-  animation-delay: 0.3s;
-  opacity: 0.4;
-  filter: blur(3px);
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+  }
 }
 
 /* Inner-shadow depth treatments */
@@ -241,4 +257,408 @@
 }
 @utility scrollbar-gutter-stable {
   scrollbar-gutter: stable;
+}
+
+/* ==========================================================================
+ * Full-page design system: aurora backdrop, gradient accents, spotlight cards,
+ * marquee and entrance effects. Every animation sits inside a
+ * `prefers-reduced-motion: no-preference` block, so the default (and the
+ * reduced-motion experience) is a calm static page.
+ * ========================================================================== */
+
+html {
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ---- Aurora + grid backdrop (fixed behind all content) ------------------- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Deliberately static: continuously animating these large translucent layers costs a lot of
+ * compositing work (and a measurable Lighthouse performance drop) for little visual gain. */
+.aurora-blob {
+  position: absolute;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in oklab, var(--blob) var(--aurora-strength), transparent),
+    transparent 65%
+  );
+}
+
+.aurora-blob[data-blob="1"] {
+  --blob: var(--brand-1);
+  top: -28vmax;
+  left: -18vmax;
+}
+
+.aurora-blob[data-blob="2"] {
+  --blob: var(--brand-2);
+  top: 6vmax;
+  right: -26vmax;
+}
+
+.aurora-blob[data-blob="3"] {
+  --blob: var(--brand-3);
+  bottom: -34vmax;
+  left: 22vw;
+}
+
+.aurora-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    #000 25%,
+    transparent 78%
+  );
+}
+
+/*
+ * Cursor effects (positions are written by PointerEffects via GSAP). Both start invisible and
+ * fade in on the first pointer move, so touch devices and reduced-motion visitors never see them.
+ * The glow sits behind the page content; the ring sits above everything, including dialogs.
+ */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 640px;
+  height: 640px;
+  margin: -320px 0 0 -320px;
+  border-radius: 9999px;
+  /* Two off-centre colour pools blurred together read as a slow aurora, not a flat spotlight. */
+  background:
+    radial-gradient(
+      circle at 35% 35%,
+      color-mix(in oklab, var(--brand-1) 20%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 68% 62%,
+      color-mix(in oklab, var(--brand-3) 18%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      circle at 55% 25%,
+      color-mix(in oklab, var(--brand-2) 14%, transparent),
+      transparent 50%
+    );
+  filter: blur(28px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  will-change: transform;
+}
+
+.cursor-glow[data-active="true"] {
+  opacity: 1;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklab, var(--foreground) 38%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  /* `scale` is its own property, so it never fights GSAP's transform-based movement. */
+  transition:
+    opacity 0.3s ease,
+    scale 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+  will-change: transform;
+}
+
+.cursor-ring[data-active="true"] {
+  opacity: 1;
+}
+
+.cursor-ring[data-hover="true"] {
+  scale: 1.7;
+  border-color: var(--brand-2);
+  background-color: color-mix(in oklab, var(--brand-2) 14%, transparent);
+}
+
+.cursor-ring[data-pressed="true"] {
+  scale: 0.75;
+}
+
+/* ---- Glass surfaces and gradient text ------------------------------------ */
+.glass {
+  background-color: color-mix(in oklab, var(--background) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.text-gradient {
+  /* Solid fallback first, for browsers without background-clip: text. */
+  color: var(--brand-1);
+  background-image: linear-gradient(
+    100deg,
+    var(--brand-1),
+    var(--brand-2) 55%,
+    var(--brand-3)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Same grey as `.text-secondary`; written out because `@apply text-secondary` would resolve to the theme's (near-white) secondary colour. */
+.eyebrow {
+  @apply font-mono text-xs tracking-[0.18em] text-[#6b6b70] uppercase dark:text-[#909092];
+}
+
+/* ---- Spotlight cards: a soft highlight follows the cursor ---------------- */
+.spotlight {
+  --mx: 50%;
+  --my: 50%;
+}
+
+.spotlight:hover {
+  border-color: color-mix(in oklab, var(--brand-2) 45%, var(--border));
+  background-image: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    color-mix(in oklab, var(--brand-2) 13%, transparent),
+    transparent 70%
+  );
+}
+
+/* ---- Entrance animations (CSS only, so they work before hydration) ------- */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.85s var(--expo-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .word-inner {
+    animation: word-up 0.95s var(--expo-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  .float-slow {
+    animation: float 7s ease-in-out infinite;
+    animation-delay: var(--d, 0ms);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes word-up {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ---- Gradient frames ------------------------------------------------------
+ * `.gradient-ring` (square elements): a conic gradient on an oversized pseudo-element that
+ * spins with `transform`, clipped by the parent, so the rotation runs on the compositor
+ * and never repaints. Animating a gradient angle (@property) repaints every frame and made
+ * the page measurably slower, so it is deliberately not used.
+ * `.gradient-frame` (any shape): the same colours as a static gradient border.
+ * Give both a padding equal to the border width and an opaque inner element. */
+.gradient-ring {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.gradient-ring::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--brand-1),
+    var(--brand-2),
+    var(--brand-3),
+    var(--brand-1)
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gradient-ring::before {
+    animation: ring-spin 8s linear infinite;
+  }
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gradient-frame {
+  background: linear-gradient(
+    135deg,
+    var(--brand-1),
+    var(--brand-2) 55%,
+    var(--brand-3)
+  );
+}
+
+/* ---- Shine sweep across primary buttons ---------------------------------- */
+.shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.28) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shine:hover::after {
+    transform: translateX(120%);
+    transition: transform 0.7s var(--expo-out);
+  }
+}
+
+/* ---- Infinite marquee (skills strip) ------------------------------------- */
+.marquee {
+  --gap: 0.75rem;
+  display: flex;
+  gap: var(--gap);
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+  width: 100%;
+}
+
+/* Without motion the second copy is redundant: show one wrapped, centred list. */
+.marquee-track[aria-hidden="true"] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    width: auto;
+    min-width: 100%;
+    animation: marquee var(--marquee-duration, 48s) linear infinite;
+  }
+
+  .marquee-track[aria-hidden="true"] {
+    display: flex;
+  }
+
+  .marquee[data-reverse="true"] .marquee-track {
+    animation-direction: reverse;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+/* ---- Chat launcher: a slow, soft halo that invites a click while the chat is closed ---- */
+.chat-launcher::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--brand-2);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chat-launcher[data-open="false"]::after {
+    animation: chat-halo 3.2s ease-out 1.5s infinite;
+  }
+}
+
+@keyframes chat-halo {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
 }

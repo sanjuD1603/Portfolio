@@ -39,8 +39,9 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           # Set this repository variable to the deployed Worker API URL.
           NEXT_PUBLIC_WORKER_API_URL: ${{ vars.WORKER_API_URL }}
-          # Optional: set the UMAMI_WEBSITE_ID repository variable to enable analytics.
-          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          # Umami website ID (public: it is visible in the page source anyway). The
+          # UMAMI_WEBSITE_ID repository variable overrides it, e.g. for a fork.
+          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID || '71f1e0fb-3926-438e-80e2-53b4c06b3ea8' }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: out

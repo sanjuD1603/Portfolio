@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { type CommandItem, filterCommands, scoreItem } from "../command-search";
+import {
+  type CommandItem,
+  filterCommands,
+  highlightParts,
+  scoreItem,
+} from "../command-search";
 
 const item = (
   label: string,
@@ -65,5 +70,56 @@ describe("filterCommands", () => {
   });
   it("does not fuzzy-match out-of-order characters", () => {
     expect(scoreItem(item("Blog"), "gbl")).toBeNull();
+  });
+});
+
+describe("highlightParts", () => {
+  it("returns one plain run for an empty query or no match", () => {
+    expect(highlightParts("Projects", "")).toEqual([
+      { text: "Projects", match: false },
+    ]);
+    expect(highlightParts("Projects", "zzz")).toEqual([
+      { text: "Projects", match: false },
+    ]);
+  });
+
+  it("marks a substring match as a single run, case-insensitively, keeping original casing", () => {
+    expect(highlightParts("Migrating MySQL", "mysql")).toEqual([
+      { text: "Migrating ", match: false },
+      { text: "MySQL", match: true },
+    ]);
+    expect(highlightParts("ChitOps", "chit")).toEqual([
+      { text: "Chit", match: true },
+      { text: "Ops", match: false },
+    ]);
+  });
+
+  it("marks the characters of a fuzzy (subsequence) match", () => {
+    expect(highlightParts("Projects", "prj")).toEqual([
+      { text: "Pr", match: true },
+      { text: "o", match: false },
+      { text: "j", match: true },
+      { text: "ects", match: false },
+    ]);
+  });
+
+  it("can be limited to substring matches (used for hints, where fuzzy would be noise)", () => {
+    expect(highlightParts("Projects", "prj", { fuzzy: false })).toEqual([
+      { text: "Projects", match: false },
+    ]);
+  });
+
+  it("always reassembles to the original text", () => {
+    for (const [t, q] of [
+      ["Cloudflare D1", "cfd"],
+      ["a-b c", "b c"],
+      ["Éclair", "écl"],
+    ]) {
+      expect(
+        highlightParts(t, q)
+          .map((p) => p.text)
+          .join(""),
+      ).toBe(t);
+    }
   });
 });

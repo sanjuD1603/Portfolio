@@ -2,7 +2,6 @@ import { ArrowDown } from "lucide-react";
 import { Section } from "@/components/section";
 import {
   COMPONENT_ROOT,
-  COMPONENTS,
   CONTENT_COMPONENTS,
   DEEPER_PAGES,
   PIPELINE,
@@ -16,9 +15,8 @@ export default function DesignSection() {
   return (
     <Section title="Design">
       <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        This section covers the architecture of the portfolio: how content moves
-        through it, how a visitor gets from one page to another, and which
-        pieces are shared across the site.
+        How content reaches the screen, how visitors move around, and which
+        pieces are shared.
       </p>
 
       <h3 className="mb-3 text-sm font-semibold">Content flow</h3>
@@ -43,10 +41,8 @@ export default function DesignSection() {
 
       <h3 className="mb-3 text-sm font-semibold">How a visitor moves around</h3>
       <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        The navigation bar sits on every page, so most pages are one click away
-        from each other. The only exceptions are the project and blog post
-        pages, which open one level deeper, after picking an item on the
-        Projects or Blog page.
+        The navbar is on every page, so each page is one click away. Only single
+        projects and posts sit one level deeper.
       </p>
       <div className="mb-8 flex flex-col items-center gap-2">
         <div className="skill-inner-shadow rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-foreground/10">
@@ -78,11 +74,10 @@ export default function DesignSection() {
 
       <h3 className="mb-3 text-sm font-semibold">Component diagram</h3>
       <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        How shared components sit under the root layout. The structural layer
-        wraps every page's content; the content layer is made up of smaller
-        pieces those pages render inside that structure.
+        Shared layout pieces wrap every page; smaller content pieces sit inside
+        them.
       </p>
-      <div className="mb-6 flex flex-col items-center gap-2">
+      <div className="mb-8 flex flex-col items-center gap-2">
         <div className="skill-inner-shadow rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-foreground/10">
           {COMPONENT_ROOT}
         </div>
@@ -109,15 +104,6 @@ export default function DesignSection() {
           ))}
         </div>
       </div>
-      <ul className="mb-8 flex flex-col gap-3 text-sm">
-        {COMPONENTS.map((c) => (
-          <li key={c.name}>
-            <span className="font-medium">{c.name}:</span>{" "}
-            <span className="text-muted-foreground">{c.detail}</span>
-          </li>
-        ))}
-      </ul>
-
       <h3 className="mb-3 text-sm font-semibold">Folder layout</h3>
       <pre className="skill-inner-shadow overflow-x-auto rounded-xl p-4 text-xs leading-relaxed ring-1 ring-foreground/10 sm:text-sm">
         <code>{STRUCTURE}</code>

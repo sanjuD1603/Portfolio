@@ -1,0 +1,91 @@
+---
+title: "TypeScript types vanish at runtime: validate data at the boundary"
+date: "2026-02-10"
+summary: "Why a TypeScript type is not a guarantee about incoming data, and how schema validation closes the gap."
+tags: ["TypeScript", "Validation", "Zod"]
+---
+
+TypeScript gives you confidence about your own code. It gives you no confidence at all about data that
+comes from outside it. That distinction is easy to forget, and it is the source of a surprising number
+of production bugs.
+
+## The gap between types and reality
+
+Consider this innocent-looking snippet:
+
+```ts
+type User = { id: number; name: string; email: string };
+
+const res = await fetch("/api/user");
+const user = (await res.json()) as User;
+
+console.log(user.email.toLowerCase());
+```
+
+The compiler is perfectly happy. But `as User` is just you telling the compiler to trust you. If the
+API returns `email: null`, or renames the field, or returns an error object instead, the code crashes
+at runtime, and TypeScript, which is erased during compilation, never gets a chance to help.
+
+Anything crossing a boundary is `unknown` in practice: API responses, form submissions, query strings,
+environment variables, the contents of `localStorage`, files, messages from another service.
+
+## Parse, don't assume
+
+The fix is to describe the data you expect as a *schema*, check incoming values against it at the
+edge, and only then treat them as typed. A schema library such as Zod makes the schema and the type the
+same thing:
+
+```ts
+import { z } from "zod";
+
+const UserSchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
+// The TypeScript type is derived from the schema, so they cannot drift apart.
+type User = z.infer<typeof UserSchema>;
+
+const result = UserSchema.safeParse(await res.json());
+if (!result.success) {
+  // Handle it: show an error, log result.error.issues, fall back.
+  return;
+}
+const user: User = result.data; // genuinely safe from here on
+```
+
+After `safeParse` succeeds, `user` really is a `User`. The unchecked cast has been replaced by an actual
+check, and all the validation lives in one place.
+
+## Where this earns its keep
+
+- **API handlers.** Validate the request body, params and query string before touching the database. A
+  malformed request becomes a clean `400` response, not a stack trace or, worse, bad data written to
+  storage.
+- **Third-party APIs.** You don't control their responses, and they change. Parsing turns a silent
+  shape change into an immediate, well-located error.
+- **Configuration.** Validate environment variables once at startup so a missing secret fails fast with
+  a clear message instead of an `undefined` deep inside a request.
+- **Forms.** The same schema can validate on the client for instant feedback and on the server for
+  safety, because client-side checks can always be bypassed.
+
+## Useful details
+
+**Coercion.** Query strings and form fields are always strings. `z.coerce.number()` turns `"42"` into
+`42` before validating, which saves a lot of manual parsing.
+
+**Defaults and optional fields.** `.optional()` and `.default(...)` describe the real contract, including
+which fields may be missing.
+
+**Refinements.** When a rule involves several fields (say `endDate` must be after `startDate`), `.refine()`
+lets you express it next to the shape itself.
+
+**Strictness.** By default unknown keys are stripped; `.strict()` rejects them if you want to catch
+typos or unexpected input.
+
+## A small habit with a big payoff
+
+Treat every value that originates outside your program as `unknown`, and give it a schema before it gets
+a type. It adds a few lines at the edges, and it removes a whole category of bug: the one where the
+types said everything was fine and the data disagreed.

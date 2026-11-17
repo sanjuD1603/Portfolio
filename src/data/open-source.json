@@ -1,0 +1,22 @@
+[
+  {
+    "project": "awesome-hub",
+    "repo": "nafisreza/awesome-hub",
+    "description": "A modern, searchable hub for all Awesome XYZ lists on GitHub.",
+    "stack": ["Next.js", "TypeScript", "shadcn/ui"],
+    "link": "https://awesome-hub.vercel.app",
+    "contributions": [
+      {
+        "title": "Added a dark mode toggle to the header",
+        "summary": "Built the theme toggle with shadcn/ui themes, closing the maintainer's open feature request.",
+        "url": "https://github.com/nafisreza/awesome-hub/pull/51",
+        "number": 51,
+        "kind": "pull-request",
+        "status": "merged",
+        "date": "2025-10-08",
+        "additions": 47,
+        "deletions": 4
+      }
+    ]
+  }
+]

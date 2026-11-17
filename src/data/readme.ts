@@ -109,28 +109,27 @@ export const PIPELINE: { icon: LucideIcon; title: string; detail: string }[] = [
   {
     icon: Database,
     title: "Content files",
-    detail:
-      "Project write ups, blog posts, and my basic info, like name and skills",
+    detail: "Projects, blog posts and profile info",
   },
   {
     icon: Code2,
     title: "Helper scripts",
-    detail: "Small scripts that read those files and organize the info",
+    detail: "Read the files and organise them",
   },
   {
     icon: LayoutGrid,
     title: "Pages",
-    detail: "About, Education, Experience, Projects, Blog, Gallery, and more",
+    detail: "About, Projects, Blog and the rest",
   },
   {
     icon: FolderTree,
     title: "Reusable pieces",
-    detail: "Buttons, cards and the navbar. Shared across every page.",
+    detail: "Navbar, cards and badges, shared by every page",
   },
   {
     icon: Globe,
     title: "What you see",
-    detail: "The finished site, in your browser",
+    detail: "The finished site in your browser",
   },
 ];
 
@@ -154,29 +153,6 @@ export const COMPONENT_ROOT = "Layout (root)";
 export const STRUCTURAL_COMPONENTS = ["Navbar", "PageHeader", "Section"];
 
 export const CONTENT_COMPONENTS = ["Badge", "Card", "GalleryCarousel", "Hero"];
-
-export const COMPONENTS: { name: string; detail: string }[] = [
-  {
-    name: "Navbar",
-    detail:
-      "The navigation bar at the top of the site. Rendered once in the root layout, so every page gets it for free.",
-  },
-  {
-    name: "PageHeader and Section",
-    detail:
-      "Keep each page's title and spacing consistent. Used on every page except Home, which uses Hero instead of PageHeader.",
-  },
-  {
-    name: "Badge",
-    detail:
-      "A small label, used for skills, certificates, project tags and the notes on this page.",
-  },
-  {
-    name: "Card",
-    detail:
-      "Used to lay out each entry on the projects page and inside the gallery carousel.",
-  },
-];
 
 export const PAGE_SET_ONE = [
   "Home",

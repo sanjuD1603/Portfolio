@@ -9,8 +9,8 @@ export default function IterationTwoSection() {
         work properly. I styled everything with Tailwind CSS, which kept
         spacing, color and type consistent across the whole site without
         repeating styles by hand. I added a light and dark theme, layouts that
-        adjust for phone and desktop screens, and smooth scrolling and page
-        transitions so moving between pages feels less sudden.
+        adjust for phone and desktop screens, and smooth page transitions so
+        moving between pages feels less sudden.
       </p>
       <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
         On the routing side, I turned the simple pages from the first stage into

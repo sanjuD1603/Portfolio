@@ -13,6 +13,7 @@ export default function ReadmePage() {
   return (
     <main className="flex-1">
       <PageHeader
+        eyebrow="Documentation"
         title="Readme"
         subtitle="A plain explanation of how I discovered, designed, built and reviewed this portfolio."
       />

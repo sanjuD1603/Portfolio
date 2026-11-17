@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import BlogCard from "@/components/common/blog-card";
+import { Reveal } from "@/components/common/reveal";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import type { BlogPost } from "@/lib/content";
@@ -83,11 +84,11 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           No posts match your search yet.
         </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <Reveal stagger className="grid gap-5 md:grid-cols-2">
           {filtered.map((post) => (
             <BlogCard key={post.slug} post={post} />
           ))}
-        </div>
+        </Reveal>
       )}
     </div>
   );

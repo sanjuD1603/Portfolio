@@ -23,6 +23,11 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// The real booker loads the Cal.com iframe; the widget only needs to know it is mounted.
+vi.mock("@/components/cal-booking", () => ({
+  Booker: () => <div data-testid="cal-booker" />,
+}));
+
 afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
@@ -42,15 +47,15 @@ async function mount() {
   );
 }
 
-describe("ChatWidget", () => {
-  it("opens a panel that Lenis smooth-scroll leaves alone, so wheel scrolling stays inside the chat", async () => {
+// Each test re-imports the widget (gsap, icons, UI kit) after `vi.resetModules()`; under a full
+// parallel run that cold import can exceed the default 5s, so allow for it.
+describe("ChatWidget", { timeout: 20_000 }, () => {
+  it("opens the chat panel when the launcher is clicked", async () => {
     await mount();
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Open chat" }));
     });
-    const panel = document.querySelector("[data-lenis-prevent]");
-    expect(panel).not.toBeNull();
-    expect(panel?.textContent).toContain("Ask about");
+    expect(screen.getByText(/Ask about/)).not.toBeNull();
   });
 
   it("greets the visitor by first name and streams the reply into the transcript", async () => {
@@ -111,5 +116,24 @@ describe("ChatWidget", () => {
     ).toHaveLength(0);
     // The visitor's avatar carries their initials.
     expect(screen.getAllByText("AL").length).toBeGreaterThan(0);
+  });
+
+  it("swaps the chat for the Cal.com booker via 'Book a call' and back again", async () => {
+    await mount();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Open chat" }));
+    });
+    expect(screen.queryByTestId("cal-booker")).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Book a call/ }));
+    });
+    expect(screen.getByTestId("cal-booker")).not.toBeNull();
+    expect(screen.queryByText("Message me")).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Back to chat" }));
+    });
+    expect(screen.queryByTestId("cal-booker")).toBeNull();
   });
 });

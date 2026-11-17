@@ -1,38 +1,46 @@
 import Image from "next/image";
+import { cardSurface } from "@/components/common/card-styles";
+import { Reveal } from "@/components/common/reveal";
 import { PageHeader, Section } from "@/components/section";
 import { assetPath } from "@/lib/assets";
 import { education } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
-/** Education: schools and degrees from `education.json`. */
+/** Education: schools and degrees from `education.json`, as a grid of cards. */
 export default function EducationPage() {
   return (
     <main className="flex-1">
-      <PageHeader title="Education" subtitle="Where I studied." />
-      <Section>
-        <ol className="flex flex-col gap-8">
+      <PageHeader
+        eyebrow="Academics"
+        title="Education"
+        subtitle="Where I studied."
+      />
+      <Section eager>
+        <Reveal stagger className="grid gap-5 md:grid-cols-2">
           {education.map((e) => (
-            <li key={e.school} className="flex items-start gap-4">
-              <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted ring-1 ring-foreground/10">
+            <article
+              key={e.school}
+              className={cn(cardSurface, "flex items-start gap-5 p-6")}
+            >
+              <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-muted ring-1 ring-foreground/10">
                 <Image
                   src={assetPath(e.logo)}
-                  alt={e.school}
-                  width={40}
-                  height={40}
+                  alt={`${e.school} logo`}
+                  width={56}
+                  height={56}
                   className="size-full object-cover"
                 />
               </span>
-              <div className="flex flex-1 flex-col gap-1">
-                <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
-                  <h2 className="text-lg font-semibold">{e.school}</h2>
-                  <span className="text-sm text-muted-foreground">
-                    {e.period}
-                  </span>
-                </div>
-                <p className="text-sm">{e.degree}</p>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-secondary font-mono text-xs tracking-wide">
+                  {e.period}
+                </span>
+                <h2 className="text-xl font-semibold">{e.school}</h2>
+                <p className="text-sm text-muted-foreground">{e.degree}</p>
               </div>
-            </li>
+            </article>
           ))}
-        </ol>
+        </Reveal>
       </Section>
     </main>
   );

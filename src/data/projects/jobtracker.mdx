@@ -1,0 +1,16 @@
+---
+name: "JobTracker"
+summary: "Job application tracker that logs each application straight into a Google Sheet through a Next.js API route."
+stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Google Sheets API"]
+link: "https://job-tracker-pi-three.vercel.app"
+github: "https://github.com/sanjuD1603/JobTracker"
+date: "2025-12-02"
+---
+
+A small Next.js app for tracking job applications. A form posts to an API route that authenticates with a Google service account and appends the application to a spreadsheet tab, so the sheet stays the single source of truth.
+
+## Highlights
+
+- Server-side Google Sheets integration with service-account auth; credentials stay in environment variables
+- Next.js App Router with a dedicated route handler for creating entries
+- Deployed on Vercel

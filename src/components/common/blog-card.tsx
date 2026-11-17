@@ -1,33 +1,43 @@
-import { ArrowRight, Notebook } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "next-view-transitions";
+import { cardSurface } from "@/components/common/card-styles";
 import type { BlogPost } from "@/lib/content";
+import { cn } from "@/lib/utils";
 
-/** Link card for one blog post: date, title and two-line summary. */
-export default function BlogCard({ post }: { post: BlogPost }) {
+/**
+ * Link card for one blog post: title, two-line summary and date, with an arrow that nudges on hover.
+ * @param headingLevel - Heading element for the title; use `h3` when the card sits under an `h2` section.
+ */
+export default function BlogCard({
+  post,
+  headingLevel: Heading = "h2",
+}: {
+  post: BlogPost;
+  headingLevel?: "h2" | "h3";
+}) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group skill-inner-shadow flex flex-col gap-3 rounded-xl p-5 ring-1 ring-foreground/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:ring-foreground/25"
+      className={cn(
+        cardSurface,
+        "flex items-start justify-between gap-3 p-5 no-underline",
+      )}
     >
-      <div className="flex items-center justify-between">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-          <Notebook className="size-4" />
-        </span>
-        <span className="text-secondary text-xs">
+      <div className="flex min-w-0 flex-col gap-1">
+        <Heading className="text-lg leading-tight font-semibold transition-colors group-hover:text-primary">
+          {post.title}
+        </Heading>
+        <p className="text-secondary line-clamp-2 text-sm leading-relaxed">
+          {post.summary}
+        </p>
+        <span className="text-secondary mt-1 text-xs">
           {new Date(post.date).toLocaleDateString("en-US", {
             month: "short",
             year: "numeric",
           })}
         </span>
       </div>
-      <h2 className="font-semibold group-hover:text-primary">{post.title}</h2>
-      <p className="text-secondary line-clamp-2 text-sm leading-relaxed">
-        {post.summary}
-      </p>
-      <span className="mt-1 inline-flex items-center gap-1 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-        Read post
-        <ArrowRight className="size-3.5" />
-      </span>
+      <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary motion-reduce:transition-none" />
     </Link>
   );
 }

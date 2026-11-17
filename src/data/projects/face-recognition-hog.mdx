@@ -1,0 +1,14 @@
+---
+name: "Quiz Access Face Recognition"
+summary: "Python face-recognition checker that decides whether a person is allowed to take a quiz, using HOG-based face encodings."
+stack: ["Python", "OpenCV", "face_recognition"]
+github: "https://github.com/sanjuD1603/Face-Recognition-with-Histograms-of-Oriented-Gradients"
+date: "2023-12-14"
+---
+
+Two-step Python tool: one script builds face encodings from a folder of enrolled photos, and a second compares a live face against them to grant or deny access to a quiz. The README notes it could be extended to detect copying during exams.
+
+## Highlights
+
+- Histogram of Oriented Gradients (HOG) face detection via the `face_recognition` library
+- Separate encoding and comparison scripts, with OpenCV and `imutils` for image handling

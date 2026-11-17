@@ -7,11 +7,13 @@ import { ChatProvider } from "@/components/chat/chat-provider";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import CommandPalette from "@/components/command-palette";
 import BackToTop from "@/components/common/back-to-top";
+import Aurora from "@/components/effects/aurora";
+import PointerEffects from "@/components/effects/pointer-effects";
+import ScrollProgress from "@/components/effects/scroll-progress";
+import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import ThemeAside from "@/components/theme-aside";
 import { buildCommandItems } from "@/lib/command-items";
-import { ReactLenis } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 const hankenGrotesk = Hanken_Grotesk({
@@ -31,10 +33,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout: theme provider, Lenis smooth scrolling, view-transition page
- * navigation, shared navbar, floating controls, command palette, chat widget
- * and (opt-in) analytics. Every page
- * renders inside it.
+ * Root layout: theme provider, view-transition page navigation and the full-width page
+ * shell - animated backdrop and scroll progress bar behind, sticky navbar (with the
+ * command palette), page content, footer, then the floating back-to-top button, chat
+ * widget and (opt-in) analytics. Every page renders inside it.
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           geistMono.variable,
           "font-sans",
         )}
+        data-scroll-behavior="smooth"
         suppressHydrationWarning
       >
         <body className="min-h-full flex flex-col">
@@ -57,20 +60,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             enableSystem
             disableTransitionOnChange
           >
-            <ReactLenis root>
-              <ChatProvider>
-                <ThemeAside>
-                  <CommandPalette items={buildCommandItems()} />
-                </ThemeAside>
-                <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col border-x">
-                  <Navbar />
-                  {children}
-                </div>
-                <BackToTop />
-                <ChatWidget />
-                <Analytics />
-              </ChatProvider>
-            </ReactLenis>
+            <ChatProvider>
+              <ScrollProgress />
+              <Aurora />
+              <PointerEffects />
+              <Navbar>
+                <CommandPalette items={buildCommandItems()} />
+              </Navbar>
+              <div className="relative z-10 flex flex-1 flex-col">
+                {children}
+              </div>
+              <Footer />
+              <BackToTop />
+              <ChatWidget />
+              <Analytics />
+            </ChatProvider>
           </ThemeProvider>
         </body>
       </html>
