@@ -1,6 +1,10 @@
 import { ArrowDown } from "lucide-react";
 import { Section } from "@/components/section";
 import {
+  CHATBOT_GATEWAY,
+  CHATBOT_ROOT,
+  CHATBOT_SERVICE_DETAILS,
+  CHATBOT_SERVICES,
   COMPONENT_ROOT,
   COMPONENTS,
   CONTENT_COMPONENTS,
@@ -111,6 +115,42 @@ export default function DesignSection() {
       </div>
       <ul className="mb-8 flex flex-col gap-3 text-sm">
         {COMPONENTS.map((c) => (
+          <li key={c.name}>
+            <span className="font-medium">{c.name}:</span>{" "}
+            <span className="text-muted-foreground">{c.detail}</span>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="mb-3 text-sm font-semibold">Chatbot &amp; data path</h3>
+      <p className="mb-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        The static site has no server of its own, so the chat widget and the
+        &quot;send to Dinesh&quot; action talk to a separate Cloudflare Worker
+        instead. A session is always resolved server-side from a hashed
+        bearer token, never from anything the visitor or the model says.
+      </p>
+      <div className="mb-6 flex flex-col items-center gap-2">
+        <div className="skill-inner-shadow rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-foreground/10">
+          {CHATBOT_ROOT}
+        </div>
+        <ArrowDown className="text-secondary size-4" />
+        <div className="skill-inner-shadow rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-foreground/10">
+          {CHATBOT_GATEWAY}
+        </div>
+        <ArrowDown className="text-secondary size-4" />
+        <div className="flex flex-wrap justify-center gap-2">
+          {CHATBOT_SERVICES.map((s) => (
+            <div
+              key={s}
+              className="skill-inner-shadow rounded-xl px-3 py-1.5 text-xs font-medium ring-1 ring-foreground/10"
+            >
+              {s}
+            </div>
+          ))}
+        </div>
+      </div>
+      <ul className="mb-8 flex flex-col gap-3 text-sm">
+        {CHATBOT_SERVICE_DETAILS.map((c) => (
           <li key={c.name}>
             <span className="font-medium">{c.name}:</span>{" "}
             <span className="text-muted-foreground">{c.detail}</span>

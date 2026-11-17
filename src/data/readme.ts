@@ -178,6 +178,39 @@ export const COMPONENTS: { name: string; detail: string }[] = [
   },
 ];
 
+/** Root of the chatbot/data-path diagram: the browser-side chat widget. */
+export const CHATBOT_ROOT = "Visitor (chat widget, browser)";
+
+/** The only server the static site talks to - a separate Cloudflare Worker. */
+export const CHATBOT_GATEWAY = "Worker API — worker-api/ (Hono, CORS)";
+
+/** Services the Worker API calls out to, shown as the diagram's bottom row. */
+export const CHATBOT_SERVICES = ["MCP tools", "Workers AI", "D1 (Drizzle)", "Resend"];
+
+/** Detail copy for {@link CHATBOT_SERVICES}, listed under the diagram. */
+export const CHATBOT_SERVICE_DETAILS: { name: string; detail: string }[] = [
+  {
+    name: "MCP tools",
+    detail:
+      "getProjects, getSkills, getExperience, getEducation, searchContent — read-only portfolio data, served at /mcp. The model has no tool that touches sessions, the database or email.",
+  },
+  {
+    name: "Workers AI",
+    detail:
+      "Tool-calling model called from /chat (bearer-token session required); replies stream back to the widget token-by-token over SSE.",
+  },
+  {
+    name: "D1 (Drizzle)",
+    detail:
+      "sessions, chat_messages and messages (leads) tables. A session is always resolved server-side from a hashed bearer token, never from the request body or anything the model says.",
+  },
+  {
+    name: "Resend",
+    detail:
+      'Emails the owner a new "send to Dinesh" lead from /messages, and - via a cron that runs every 10 minutes - a transcript of any chat left idle for 30+ minutes. The same cron purges sessions older than 60 days.',
+  },
+];
+
 export const PAGE_SET_ONE = [
   "Home",
   "About",
